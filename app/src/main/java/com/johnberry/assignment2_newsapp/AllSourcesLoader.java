@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -58,7 +59,7 @@ public class AllSourcesLoader implements  Runnable {
 
 //                System.out.println("AllSourcesLoader received: " + sb);
 
-                parseJSON(sb.toString());
+//                parseJSON(sb.toString());
 //                if (regionMap != null) {
 //                    mainActivity.runOnUiThread(() -> mainActivity.setupRegions(regionMap));
 //                }
@@ -72,17 +73,26 @@ public class AllSourcesLoader implements  Runnable {
                 }
                 conn.disconnect();
 
-                HashMap<String, HashSet<String>> returnedVal =  parseJSON(sb.toString());
+
+//                HashMap<String, HashSet<String>> returnedVal =  parseJSON(sb.toString());
 //                System.out.println("Parse ret received: " + sb);
                 Log.d(TAG, "run: " + sb.toString());
 
 
             }
+
+            JSONObject jsonResponse = new JSONObject(sb.toString());
+            String storyStr = jsonResponse.getString("sources");
+            parseJSON(storyStr);
+//            System.out.println("Story from response: " + story);
+
         } catch (ProtocolException e) {
             e.printStackTrace();
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
@@ -94,13 +104,18 @@ public class AllSourcesLoader implements  Runnable {
 
         try {
             JSONArray jObjMain = new JSONArray(s);
-            JSONArray storyArray = new JSONArray(jObjMain.getString(Integer.parseInt("sources")));
-            System.out.println("Story Array:" + storyArray);
+//            JSONArray storyArray = new JSONArray(jObjMain.getString(Integer.parseInt("sources")));
+//            JSONObject story = new JSONObject(s);
+
+//            JSONArray storyArray = new JSONArray(story.getString("sources"));
+
+//            System.out.println("Story Array:" + storyArray);
             // Here we only want to regions and subregions
             for (int i = 0; i < jObjMain.length(); i++) {
                 JSONObject story = (JSONObject) jObjMain.get(i);
 
-//                System.out.println("Parser received: " + jCountry);
+                System.out.println("Parser processing story: " + story);
+                System.out.println("---------------------------------");
 //                String region = jCountry.getString("region");
 //                String subRegion = jCountry.getString("subregion");
 //
