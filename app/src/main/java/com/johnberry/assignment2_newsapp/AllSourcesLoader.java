@@ -3,6 +3,9 @@ package com.johnberry.assignment2_newsapp;
 import android.net.Uri;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -53,9 +56,9 @@ public class AllSourcesLoader implements  Runnable {
                 }
                 conn.disconnect();
 
-                System.out.println("AllSourcesLoader received: " + sb);
+//                System.out.println("AllSourcesLoader received: " + sb);
 
-//                HashMap<String, HashSet<String>> regionMap = parseJSON(sb.toString());
+                parseJSON(sb.toString());
 //                if (regionMap != null) {
 //                    mainActivity.runOnUiThread(() -> mainActivity.setupRegions(regionMap));
 //                }
@@ -69,7 +72,8 @@ public class AllSourcesLoader implements  Runnable {
                 }
                 conn.disconnect();
 
-                System.out.println("AllSourcesLoader received: " + sb);
+                HashMap<String, HashSet<String>> returnedVal =  parseJSON(sb.toString());
+//                System.out.println("Parse ret received: " + sb);
                 Log.d(TAG, "run: " + sb.toString());
 
 
@@ -82,4 +86,44 @@ public class AllSourcesLoader implements  Runnable {
             e.printStackTrace();
         }
     }
+
+
+    private HashMap<String, HashSet<String>> parseJSON(String s) {
+
+        HashMap<String, HashSet<String>> storyMap = new HashMap<>();
+
+        try {
+            JSONArray jObjMain = new JSONArray(s);
+            JSONArray storyArray = new JSONArray(jObjMain.getString(Integer.parseInt("sources")));
+            System.out.println("Story Array:" + storyArray);
+            // Here we only want to regions and subregions
+            for (int i = 0; i < jObjMain.length(); i++) {
+                JSONObject story = (JSONObject) jObjMain.get(i);
+
+//                System.out.println("Parser received: " + jCountry);
+//                String region = jCountry.getString("region");
+//                String subRegion = jCountry.getString("subregion");
+//
+//                if (region.isEmpty())
+//                    continue;
+//
+//                if (subRegion.isEmpty())
+//                    subRegion = "Unspecified";
+//
+//                if (!regionMap.containsKey(region))
+//                    regionMap.put(region, new HashSet<>());
+
+//                HashSet<String> rSet = regionMap.get(region);
+//                if (rSet != null) {
+//                    rSet.add(subRegion);
+//                }
+            }
+            return storyMap;
+        } catch (
+                Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

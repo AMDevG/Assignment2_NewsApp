@@ -10,10 +10,13 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.Menu;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -68,5 +71,39 @@ public class MainActivity extends AppCompatActivity {
             new Thread(new AllSourcesLoader(this)).start();
         }
 
+    }
+
+
+///NEED TO LOAD TOPICS HERE
+    public void setupRegions(HashMap<String, HashSet<String>> storyMapIn) {
+
+        newsData.clear();
+
+        for (String s : storyMapIn.keySet()) {
+            HashSet<String> hSet = storyMapIn.get(s);
+            if (hSet == null)
+                continue;
+            ArrayList<String> subRegions = new ArrayList<>(hSet);
+            Collections.sort(subRegions);
+//            storyMapIn.put(s, subRegions);
+        }
+
+        ArrayList<String> tempList = new ArrayList<>(storyMapIn.keySet());
+
+        Collections.sort(tempList);
+        for (String s : tempList)
+            opt_menu.add(s);
+
+        ArrayList<String> lst = newsData.get(tempList.get(0));
+        if (lst != null) {
+//            subRegionDisplayed.addAll(lst);
+        }
+
+//        mDrawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_item, subRegionDisplayed));
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
     }
 }
