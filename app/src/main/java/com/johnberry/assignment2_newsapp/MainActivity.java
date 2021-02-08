@@ -121,9 +121,9 @@ public class MainActivity extends AppCompatActivity {
 //        SubMenu subMenu = topicMenu.getSubMenu();
 
 //        Menu choiceMenu = findViewById(R.id.topic_menu);
-        for (String s : topicList){
-//            subMenu.add(s);
-        }
+//        for (String s : topicList){
+////            subMenu.add(s);
+//        }
 
 //        ArrayList<String> lst = newsData.get(top.get(0));
 //        if (lst != null) {
@@ -146,9 +146,8 @@ public class MainActivity extends AppCompatActivity {
         MenuItem menuItem = menu.findItem(R.id.topic_menu);
         SubMenu subMenu = menuItem.getSubMenu();
         System.out.println("In Set Menu Create" + topicList);
-//        for(String s : topicList){
-//            System.out.println("Add to submenus here! for: " + s);
-//        }
+        subMenu.add("Topic #1");
+        subMenu.add("Topic #2git");
 
         return true;
     }
