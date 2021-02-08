@@ -10,6 +10,9 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.SubMenu;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -113,8 +116,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Collections.sort(topicList);
-        for (String s : topicList)
-            opt_menu.add(s);
+
+        MenuItem topicMenu = findViewById(R.id.topic_menu);
+//        SubMenu subMenu = topicMenu.getSubMenu();
+
+//        Menu choiceMenu = findViewById(R.id.topic_menu);
+        for (String s : topicList){
+//            subMenu.add(s);
+        }
 
 //        ArrayList<String> lst = newsData.get(top.get(0));
 //        if (lst != null) {
@@ -132,6 +141,39 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         opt_menu = menu;
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.home_menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.topic_menu);
+        SubMenu subMenu = menuItem.getSubMenu();
+        System.out.println("In Set Menu Create" + topicList);
+//        for(String s : topicList){
+//            System.out.println("Add to submenus here! for: " + s);
+//        }
+
         return true;
+    }
+
+    private void hideOption(int id)
+    {
+        MenuItem item = opt_menu.findItem(id);
+        item.setVisible(false);
+    }
+
+    private void showOption(int id)
+    {
+        MenuItem item = opt_menu.findItem(id);
+        item.setVisible(true);
+    }
+
+    private void setOptionTitle(int id, String title)
+    {
+        MenuItem item = opt_menu.findItem(id);
+        item.setTitle(title);
+    }
+
+    private void setOptionIcon(int id, int iconRes)
+    {
+        MenuItem item = opt_menu.findItem(id);
+        item.setIcon(iconRes);
     }
 }

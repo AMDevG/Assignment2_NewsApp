@@ -38,7 +38,7 @@ public class AllSourcesLoader implements  Runnable {
     @Override
     public void run() {
 
-        System.out.println("All Sources Loader runnable called!");
+//        System.out.println("All Sources Loader runnable called!");
 
         Uri dataUri = Uri.parse(baseDataURL);
         String urlToUse = dataUri.toString();
@@ -117,8 +117,8 @@ public class AllSourcesLoader implements  Runnable {
 
             for (int i = 0; i < jObjMain.length(); i++) {
                 JSONObject story = (JSONObject) jObjMain.get(i);
-                System.out.println("Parser processing story: " + story);
-                System.out.println("---------------------------------");
+//                System.out.println("Parser processing story: " + story);
+//                System.out.println("---------------------------------");
 
                 String id = story.getString("id");
                 String name = story.getString("name");
