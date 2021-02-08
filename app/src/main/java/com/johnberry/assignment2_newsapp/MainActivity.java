@@ -74,30 +74,38 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-///NEED TO LOAD TOPICS HERE
-    public void setupRegions(HashMap<String, HashSet<String>> storyMapIn) {
+///NEED TO PASS IN HASHMAP FROM LOADER
+    public void setupStories(ArrayList<Story> storiesIn) {
+        System.out.println("setupStories received this many: " + storiesIn.size());
+//        newsData.clear();
 
-        newsData.clear();
+//        for (String s : storiesIn.keySet()) {
+//            HashSet<String> hSet = storyMapIn.get(s);
+//            if (hSet == null)
+//                continue;
+//            ArrayList<String> topicList = new ArrayList<>(hSet);
+//            Collections.sort(topicList);
+////            storyMapIn.put(s, subRegions);
+//        }
 
-        for (String s : storyMapIn.keySet()) {
-            HashSet<String> hSet = storyMapIn.get(s);
-            if (hSet == null)
-                continue;
-            ArrayList<String> subRegions = new ArrayList<>(hSet);
-            Collections.sort(subRegions);
-//            storyMapIn.put(s, subRegions);
+        ArrayList<String> topicList = new ArrayList<>();
+
+        for (Story s : storiesIn){
+
+            String topic = s.getCategory();
+            if(!topicList.contains(topic)) {
+                topicList.add(topic);
+            }
         }
 
-        ArrayList<String> tempList = new ArrayList<>(storyMapIn.keySet());
-
-        Collections.sort(tempList);
-        for (String s : tempList)
+        Collections.sort(topicList);
+        for (String s : topicList)
             opt_menu.add(s);
 
-        ArrayList<String> lst = newsData.get(tempList.get(0));
-        if (lst != null) {
-//            subRegionDisplayed.addAll(lst);
-        }
+//        ArrayList<String> lst = newsData.get(top.get(0));
+//        if (lst != null) {
+////            subRegionDisplayed.addAll(lst);
+//        }
 
 //        mDrawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_item, subRegionDisplayed));
 
@@ -106,4 +114,10 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setHomeButtonEnabled(true);
         }
     }
+
+//    private void setNewsData(ArrayList<Story> storiesIn){
+//
+//        System.out.println("Received this many stories in UI: " + storiesIn.size());
+//
+//    }
 }

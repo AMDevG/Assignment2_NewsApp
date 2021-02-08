@@ -14,6 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -25,6 +26,7 @@ public class AllSourcesLoader implements  Runnable {
     private final MainActivity mainActivity;
     private static final String API_KEY = "80b0447675db40dda819d9d466b5a3e8";
     private static final String baseDataURL = "https://newsapi.org/v2/sources?apiKey=" + API_KEY;
+    private ArrayList<Story> storyArrayList = new ArrayList<Story>();
 
     AllSourcesLoader(MainActivity ma) {
         mainActivity = ma;
@@ -73,7 +75,6 @@ public class AllSourcesLoader implements  Runnable {
                 }
                 conn.disconnect();
 
-
 //                HashMap<String, HashSet<String>> returnedVal =  parseJSON(sb.toString());
 //                System.out.println("Parse ret received: " + sb);
                 Log.d(TAG, "run: " + sb.toString());
@@ -83,8 +84,13 @@ public class AllSourcesLoader implements  Runnable {
 
             JSONObject jsonResponse = new JSONObject(sb.toString());
             String storyStr = jsonResponse.getString("sources");
-            parseJSON(storyStr);
-//            System.out.println("Story from response: " + story);
+            ArrayList<Story> storyObjects = parseJSON(storyStr);
+
+            if (storyObjects != null) {
+                mainActivity.runOnUiThread(() -> mainActivity.setupStories(storyObjects));
+            }
+
+
 
         } catch (ProtocolException e) {
             e.printStackTrace();
@@ -98,42 +104,36 @@ public class AllSourcesLoader implements  Runnable {
     }
 
 
-    private HashMap<String, HashSet<String>> parseJSON(String s) {
+    private ArrayList<Story> parseJSON(String s) {
 
         HashMap<String, HashSet<String>> storyMap = new HashMap<>();
 
+
         try {
             JSONArray jObjMain = new JSONArray(s);
-//            JSONArray storyArray = new JSONArray(jObjMain.getString(Integer.parseInt("sources")));
-//            JSONObject story = new JSONObject(s);
 
-//            JSONArray storyArray = new JSONArray(story.getString("sources"));
-
-//            System.out.println("Story Array:" + storyArray);
-            // Here we only want to regions and subregions
             for (int i = 0; i < jObjMain.length(); i++) {
                 JSONObject story = (JSONObject) jObjMain.get(i);
-
                 System.out.println("Parser processing story: " + story);
                 System.out.println("---------------------------------");
-//                String region = jCountry.getString("region");
-//                String subRegion = jCountry.getString("subregion");
-//
-//                if (region.isEmpty())
-//                    continue;
-//
-//                if (subRegion.isEmpty())
-//                    subRegion = "Unspecified";
-//
-//                if (!regionMap.containsKey(region))
-//                    regionMap.put(region, new HashSet<>());
+
+                String id = story.getString("id");
+                String name = story.getString("name");
+                String description = story.getString("description");
+                String url = story.getString("url");
+                String country = story.getString("country");
+                String language = story.getString("language");
+                String category = story.getString("category");
+
+                Story newStory = new Story(id, name, description, url, country, language, category);
+                storyArrayList.add(newStory);
 
 //                HashSet<String> rSet = regionMap.get(region);
 //                if (rSet != null) {
 //                    rSet.add(subRegion);
 //                }
             }
-            return storyMap;
+            return storyArrayList;
         } catch (
                 Exception e) {
             e.printStackTrace();
