@@ -32,6 +32,10 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager pager;
     public static int screenWidth, screenHeight;
 
+    private ArrayList<String> topicList = new ArrayList<String>();
+    private ArrayList<String> countryList = new ArrayList<String>();
+    private ArrayList<String> languageList = new ArrayList<String>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
 ///NEED TO PASS IN HASHMAP FROM LOADER
     public void setupStories(ArrayList<Story> storiesIn) {
         System.out.println("setupStories received this many: " + storiesIn.size());
+
 //        newsData.clear();
 
 //        for (String s : storiesIn.keySet()) {
@@ -88,13 +93,22 @@ public class MainActivity extends AppCompatActivity {
 ////            storyMapIn.put(s, subRegions);
 //        }
 
-        ArrayList<String> topicList = new ArrayList<>();
+//        ArrayList<String> topicList = new ArrayList<>();
 
         for (Story s : storiesIn){
 
             String topic = s.getCategory();
+            String language = s.getLanguage();
+            String country = s.getCountry();
+
             if(!topicList.contains(topic)) {
                 topicList.add(topic);
+            }
+            if(!languageList.contains(language)) {
+                languageList.add(language);
+            }
+            if(!countryList.contains(country)) {
+                countryList.add(country);
             }
         }
 
@@ -115,9 +129,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    private void setNewsData(ArrayList<Story> storiesIn){
-//
-//        System.out.println("Received this many stories in UI: " + storiesIn.size());
-//
-//    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        opt_menu = menu;
+        return true;
+    }
 }

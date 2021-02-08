@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -26,7 +27,9 @@ public class AllSourcesLoader implements  Runnable {
     private final MainActivity mainActivity;
     private static final String API_KEY = "80b0447675db40dda819d9d466b5a3e8";
     private static final String baseDataURL = "https://newsapi.org/v2/sources?apiKey=" + API_KEY;
+
     private ArrayList<Story> storyArrayList = new ArrayList<Story>();
+
 
     AllSourcesLoader(MainActivity ma) {
         mainActivity = ma;
