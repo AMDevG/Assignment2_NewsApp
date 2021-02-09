@@ -42,6 +42,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (newsData.isEmpty()) {
+            System.out.println("newsData Hashmap is empty; Calling AllSourcesLoader");
+            new Thread(new AllSourcesLoader(this)).start();
+        }
         setContentView(R.layout.activity_main);
 
         Display display = getWindowManager().getDefaultDisplay();
@@ -73,10 +78,6 @@ public class MainActivity extends AppCompatActivity {
         pager = findViewById(R.id.viewpager);
 //        pager.setAdapter(pageAdapter);
 
-        if (newsData.isEmpty()) {
-            System.out.println("newsData Hashmap is empty; Calling AllSourcesLoader");
-            new Thread(new AllSourcesLoader(this)).start();
-        }
 
     }
 
@@ -115,6 +116,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+//        setSubMenus();
+
         Collections.sort(topicList);
 
         MenuItem topicMenu = findViewById(R.id.topic_menu);
@@ -143,11 +146,20 @@ public class MainActivity extends AppCompatActivity {
         opt_menu = menu;
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.home_menu, menu);
-        MenuItem menuItem = menu.findItem(R.id.topic_menu);
-        SubMenu subMenu = menuItem.getSubMenu();
+        MenuItem topicItem = menu.findItem(R.id.topic_menu);
+        MenuItem countryItem = menu.findItem(R.id.country_menu);
+        MenuItem languageItem = menu.findItem(R.id.language_menu);
+
+        SubMenu topicSubMenu = topicItem.getSubMenu();
+        SubMenu countrySubMenu = countryItem.getSubMenu();
+        SubMenu languageSubMenu = languageItem.getSubMenu();
+
         System.out.println("In Set Menu Create" + topicList);
-        subMenu.add("Topic #1");
-        subMenu.add("Topic #2git");
+        topicSubMenu.add("All");
+        countrySubMenu.add("All");
+        languageSubMenu.add("All");
+
+
 
         return true;
     }
@@ -157,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
         MenuItem item = opt_menu.findItem(id);
         item.setVisible(false);
     }
+
 
     private void showOption(int id)
     {
