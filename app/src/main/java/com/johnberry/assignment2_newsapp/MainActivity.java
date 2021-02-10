@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private final HashMap<String, ArrayList<String>> topicData = new HashMap<>();
     private Menu opt_menu;
-    private final ArrayList<String> subRegionDisplayed = new ArrayList<>();
+    private final ArrayList<String> drawerArray = new ArrayList<>();
     private HashMap<String, ArrayList<Story>> languageMap = new HashMap<>();
     private HashMap<String, ArrayList<Story>> countryMap = new HashMap<>();
     private HashMap<String, ArrayList<Story>> topicMap = new HashMap<>();
@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> topicList = new ArrayList<String>();
     private ArrayList<String> countryList = new ArrayList<String>();
     private ArrayList<String> languageList = new ArrayList<String>();
+    private ArrayList<String> sourceList = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
             String topic = s.getCategory();
             String language = s.getLanguage();
             String country = s.getCountry();
+            String source = s.getSourceName();
 
             // Sets up options submenus
             if(!topicList.contains(topic)) {
@@ -124,12 +126,17 @@ public class MainActivity extends AppCompatActivity {
             if(!countryList.contains(country)) {
                 countryList.add(country);
             }
+            if(!sourceList.contains(source)) {
+                sourceList.add(source);
+            }
         }
         Collections.sort(topicList);
         Collections.sort(languageList);
         Collections.sort(countryList);
+        Collections.sort(sourceList);
 
         for(String s : topicList){
+            drawerArray.add(s);
             ArrayList<Story> mapList = new ArrayList<Story>();
             for(Story story : storiesIn){
                 if(story.getCategory().equalsIgnoreCase(s)){
@@ -159,33 +166,13 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        System.out.println("topicMap is: " + topicMap);
-//        for(String s : languageList){
-//            languageMap.put(s, new ArrayList<String>());
-//        }
-//        for(String s : countryList){
-//            countryMap.put(s, new ArrayList<String>());
-//        }
-//
-
-
 
         opt_menu.clear();
         onCreateOptionsMenu(opt_menu);
 
-        /* --------------------- SETUP DRAWER ------------- */
-        /* create 3 hashmaps where keys are
-            1) Topic Name:
-         */
 
 
-
-
-
-
-
-
-//        mDrawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_item, subRegionDisplayed));
+        mDrawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_item, sourceList));
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
