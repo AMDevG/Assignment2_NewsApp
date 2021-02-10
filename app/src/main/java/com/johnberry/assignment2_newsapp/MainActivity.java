@@ -130,13 +130,17 @@ public class MainActivity extends AppCompatActivity {
                 sourceList.add(source);
             }
         }
+
+        for(String s : sourceList){
+            drawerArray.add(s);
+        }
         Collections.sort(topicList);
         Collections.sort(languageList);
         Collections.sort(countryList);
         Collections.sort(sourceList);
 
         for(String s : topicList){
-            drawerArray.add(s);
+
             ArrayList<Story> mapList = new ArrayList<Story>();
             for(Story story : storiesIn){
                 if(story.getCategory().equalsIgnoreCase(s)){
@@ -172,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        mDrawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_item, sourceList));
+        mDrawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_item, drawerArray));
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -183,6 +187,8 @@ public class MainActivity extends AppCompatActivity {
     // RUNS WHEN A DRAWER ITEM IS SELECTED!! CALLS API TO GET INFO FOR STORY
     private void selectItem(int position) {
         pager.setBackground(null);
+        System.out.println("Item selected: " + drawerArray.get(position));
+//        setStoryFragments();
 //        currentSubRegion = subRegionDisplayed.get(position);
 //        new Thread(new SubRegionLoader(this, currentSubRegion)).start();
         mDrawerLayout.closeDrawer(mDrawerList);
@@ -251,7 +257,10 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    public void setDrawerVals(ArrayList<Story> storyList) {
+    // CALLED FROM SUBREGION LOADER
+    // COUNTRY OBJECTS ARE CREATED IN SUBREGION LOADER
+    //
+    public void setStoryFragments(ArrayList<Story> storyList) {
 
 //        setTitle(currentSubRegion);
 

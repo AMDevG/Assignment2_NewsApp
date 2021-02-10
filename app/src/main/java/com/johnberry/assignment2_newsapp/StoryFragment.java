@@ -45,9 +45,11 @@ public class StoryFragment extends Fragment {
             int index = args.getInt("INDEX");
             int total = args.getInt("TOTAL_COUNT");
 
-//            TextView country = fragment_layout.findViewById(R.id.country);
+            System.out.println("StoryFragment received: " + currentStory.getSourceName());
+
+            TextView country = fragment_layout.findViewById(R.id.country);
 //
-//            country.setText(currentCountry.getName());
+            country.setText(currentStory.getDescription());
 //            TextView region = fragment_layout.findViewById(R.id.region);
 //            region.setText(String.format(Locale.getDefault(),
 //                    "%s (%s)", currentCountry.getRegion(), currentCountry.getSubRegion()));
