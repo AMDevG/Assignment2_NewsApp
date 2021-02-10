@@ -33,6 +33,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -44,6 +45,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private final HashMap<String, ArrayList<String>> topicData = new HashMap<>();
     private Menu opt_menu;
+    private final ArrayList<String> subRegionDisplayed = new ArrayList<>();
+    private HashMap<String, ArrayList<Story>> languageMap = new HashMap<>();
+    private HashMap<String, ArrayList<Story>> countryMap = new HashMap<>();
+    private HashMap<String, ArrayList<Story>> topicMap = new HashMap<>();
 
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -97,17 +102,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
 ///NEED TO PASS IN HASHMAP FROM LOADER
     public void setupStories(ArrayList<Story> storiesIn) {
-        for(Story s : storiesIn){
-            System.out.println("Received: " + s.getCategory());
-        }
-        for (Story s : storiesIn){
 
+        // Setup Hashmap to populate drawer adapter
+
+
+        for (Story s : storiesIn){
             String topic = s.getCategory();
             String language = s.getLanguage();
             String country = s.getCountry();
 
+            // Sets up options submenus
             if(!topicList.contains(topic)) {
                 topicList.add(topic);
             }
@@ -118,15 +125,65 @@ public class MainActivity extends AppCompatActivity {
                 countryList.add(country);
             }
         }
-
         Collections.sort(topicList);
         Collections.sort(languageList);
         Collections.sort(countryList);
+
+        for(String s : topicList){
+            ArrayList<Story> mapList = new ArrayList<Story>();
+            for(Story story : storiesIn){
+                if(story.getCategory().equalsIgnoreCase(s)){
+                    mapList.add(story);
+                }
+            topicMap.put(s,mapList);
+            }
+        }
+
+        for(String s : countryList){
+            ArrayList<Story> mapList = new ArrayList<Story>();
+            for(Story story : storiesIn){
+                if(story.getCategory().equalsIgnoreCase(s)){
+                    mapList.add(story);
+                }
+                countryMap.put(s,mapList);
+            }
+        }
+
+        for(String s : languageList){
+            ArrayList<Story> mapList = new ArrayList<Story>();
+            for(Story story : storiesIn){
+                if(story.getCategory().equalsIgnoreCase(s)){
+                    mapList.add(story);
+                }
+                languageMap.put(s,mapList);
+            }
+        }
+
+        System.out.println("topicMap is: " + topicMap);
+//        for(String s : languageList){
+//            languageMap.put(s, new ArrayList<String>());
+//        }
+//        for(String s : countryList){
+//            countryMap.put(s, new ArrayList<String>());
+//        }
 //
-//        System.out.println("In setupStories; Current topics: " + topicList);
+
+
 
         opt_menu.clear();
         onCreateOptionsMenu(opt_menu);
+
+        /* --------------------- SETUP DRAWER ------------- */
+        /* create 3 hashmaps where keys are
+            1) Topic Name:
+         */
+
+
+
+
+
+
+
 
 //        mDrawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_item, subRegionDisplayed));
 
@@ -157,7 +214,6 @@ public class MainActivity extends AppCompatActivity {
         SubMenu countrySubMenu = countryItem.getSubMenu();
         SubMenu languageSubMenu = languageItem.getSubMenu();
 
-        System.out.println("In Set Menu Create" + topicList);
         topicSubMenu.add("All");
         countrySubMenu.add("All");
         languageSubMenu.add("All");
@@ -206,6 +262,24 @@ public class MainActivity extends AppCompatActivity {
                }
             }
         return true;
+    }
+
+    public void setDrawerVals(ArrayList<Story> storyList) {
+
+//        setTitle(currentSubRegion);
+
+        for (int i = 0; i < pageAdapter.getCount(); i++)
+            pageAdapter.notifyChangeInPosition(i);
+        fragments.clear();
+
+        // CREATES FRAGMENT FOR EACH STORY OBJECT PASSED
+        for (int i = 0; i < storyList.size(); i++) {
+            fragments.add(
+                    StoryFragment.newInstance(storyList.get(i), i+1, storyList.size()));
+        }
+
+        pageAdapter.notifyDataSetChanged();
+        pager.setCurrentItem(0);
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
