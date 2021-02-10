@@ -35,7 +35,7 @@ public class StoryFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View fragment_layout = inflater.inflate(R.layout.fragment_country, container, false);
+        View fragment_layout = inflater.inflate(R.layout.fragment_article, container, false);
 
         Bundle args = getArguments();
         if (args != null) {
@@ -47,30 +47,16 @@ public class StoryFragment extends Fragment {
             int total = args.getInt("TOTAL_COUNT");
 
 
-            TextView country = fragment_layout.findViewById(R.id.country);
+            TextView titleTextview = fragment_layout.findViewById(R.id.titleTextView);
+            TextView publishedAtTextView = fragment_layout.findViewById(R.id.publishedAtTextView);
+            TextView authorTextView = fragment_layout.findViewById(R.id.authorTextView);
+            ImageView articleImageView = fragment_layout.findViewById(R.id.articleImageView);
+            TextView descriptionTextView = fragment_layout.findViewById(R.id.descriptionTextView);
 //
-            country.setText(currentStory.getTitle());
-//            TextView region = fragment_layout.findViewById(R.id.region);
-//            region.setText(String.format(Locale.getDefault(),
-//                    "%s (%s)", currentCountry.getRegion(), currentCountry.getSubRegion()));
-//
-//            TextView capital = fragment_layout.findViewById(R.id.capital);
-//            capital.setText(currentCountry.getCapital());
-//
-//            TextView population = fragment_layout.findViewById(R.id.population);
-//            population.setText(String.format(Locale.US, "%,d", currentCountry.getPopulation()));
-//
-//            TextView area = fragment_layout.findViewById(R.id.area);
-//            area.setText(String.format(Locale.US, "%,d sq km", currentCountry.getArea()));
-
-//            TextView citizen = fragment_layout.findViewById(R.id.citizens);
-//            citizen.setText(currentCountry.getCitizen());
-//
-//            TextView codes = fragment_layout.findViewById(R.id.codes);
-//            codes.setText(currentCountry.getCallingCodes());
-//
-//            TextView borders = fragment_layout.findViewById(R.id.borders);
-//            borders.setText(currentCountry.getBorders());
+            titleTextview.setText(currentStory.getTitle());
+            publishedAtTextView.setText(currentStory.getPublishedAt());
+            authorTextView.setText(currentStory.getAuthor());
+            descriptionTextView.setText(currentStory.getDescription());
 
             TextView pageNum = fragment_layout.findViewById(R.id.page_num);
             pageNum.setText(String.format(Locale.US, "%d of %d", index, total));
