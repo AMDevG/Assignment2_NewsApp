@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     private HashMap<String, ArrayList<Story>> languageMap = new HashMap<>();
     private HashMap<String, ArrayList<Story>> countryMap = new HashMap<>();
     private HashMap<String, ArrayList<Story>> topicMap = new HashMap<>();
+    private HashMap<String, ArrayList<Story>> sourceMap = new HashMap<>();
+    private ArrayList<Story> storyMaster = new ArrayList<>();
 
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -57,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private MyPageAdapter pageAdapter;
     private ViewPager pager;
     public static int screenWidth, screenHeight;
+    private String sourceID;
 
     private ArrayList<String> topicList = new ArrayList<String>();
     private ArrayList<String> countryList = new ArrayList<String>();
@@ -109,12 +112,13 @@ public class MainActivity extends AppCompatActivity {
 
         // Setup Hashmap to populate drawer adapter
 
-
         for (Story s : storiesIn){
+            storyMaster.add(s);
             String topic = s.getCategory();
             String language = s.getLanguage();
             String country = s.getCountry();
             String source = s.getSourceName();
+
 
             // Sets up options submenus
             if(!topicList.contains(topic)) {
@@ -170,6 +174,18 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+//        for(String s : sourceList){
+//            ArrayList<Story> mapList = new ArrayList<Story>();
+//            for(Story story : storiesIn){
+//                if(story.getSourceName().equalsIgnoreCase(s)){
+//                    mapList.add(story);
+//                }
+////                sourceMap.put(s,mapList);
+//            }
+//        }
+
+//        System.out.println("MSNBC Source Map is: " + sourceMap.get("MSNBC"));
+
 
         opt_menu.clear();
         onCreateOptionsMenu(opt_menu);
@@ -187,11 +203,20 @@ public class MainActivity extends AppCompatActivity {
     // RUNS WHEN A DRAWER ITEM IS SELECTED!! CALLS API TO GET INFO FOR STORY
     private void selectItem(int position) {
         pager.setBackground(null);
-        System.out.println("Item selected: " + drawerArray.get(position));
-//        setStoryFragments();
+        String itemSelected = drawerArray.get(position);
+
+
+        for (Story s : storyMaster) {
+            if (s.getSourceName().equalsIgnoreCase(itemSelected)) {
+                sourceID = s.getId();
+            }
+
 //        currentSubRegion = subRegionDisplayed.get(position);
-//        new Thread(new SubRegionLoader(this, currentSubRegion)).start();
-        mDrawerLayout.closeDrawer(mDrawerList);
+
+            mDrawerLayout.closeDrawer(mDrawerList);
+        }
+
+        new Thread(new SourceLoaderRunnable(this, sourceID)).start();
     }
 
     @Override
@@ -260,8 +285,8 @@ public class MainActivity extends AppCompatActivity {
     // CALLED FROM SUBREGION LOADER
     // COUNTRY OBJECTS ARE CREATED IN SUBREGION LOADER
     //
-    public void setStoryFragments(ArrayList<Story> storyList) {
-
+    public void setStoryFragments(ArrayList<Article> storyList) {
+            System.out.println("Received ArticleList from Runnable Size: " + storyList.size());
 //        setTitle(currentSubRegion);
 
         for (int i = 0; i < pageAdapter.getCount(); i++)

@@ -17,13 +17,14 @@ public class StoryFragment extends Fragment {
     public StoryFragment(){
     }
 
-    public static StoryFragment newInstance(Story story, int index, int max){
+    public static StoryFragment newInstance(Article article, int index, int max){
         StoryFragment f = new StoryFragment();
         Bundle bdl = new Bundle(1);
-        bdl.putSerializable("STORY_DATA", story);
+        bdl.putSerializable("STORY_DATA", article);
         bdl.putSerializable("INDEX", index);
         bdl.putSerializable("TOTAL_COUNT", max);
         f.setArguments(bdl);
+        System.out.println("New Fragement Created size: " + max);
         return f;
     }
 
@@ -38,18 +39,17 @@ public class StoryFragment extends Fragment {
 
         Bundle args = getArguments();
         if (args != null) {
-            final Story currentStory = (Story) args.getSerializable("STORY_DATA");
+            final Article currentStory = (Article) args.getSerializable("STORY_DATA");
             if (currentStory == null) {
                 return null;
             }
             int index = args.getInt("INDEX");
             int total = args.getInt("TOTAL_COUNT");
 
-            System.out.println("StoryFragment received: " + currentStory.getSourceName());
 
             TextView country = fragment_layout.findViewById(R.id.country);
 //
-            country.setText(currentStory.getDescription());
+            country.setText(currentStory.getTitle());
 //            TextView region = fragment_layout.findViewById(R.id.region);
 //            region.setText(String.format(Locale.getDefault(),
 //                    "%s (%s)", currentCountry.getRegion(), currentCountry.getSubRegion()));
