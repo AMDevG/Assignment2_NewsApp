@@ -38,8 +38,6 @@ public class AllSourcesLoader implements  Runnable {
     @Override
     public void run() {
 
-//        System.out.println("All Sources Loader runnable called!");
-
         Uri dataUri = Uri.parse(baseDataURL);
         String urlToUse = dataUri.toString();
         try {
@@ -62,12 +60,6 @@ public class AllSourcesLoader implements  Runnable {
                 }
                 conn.disconnect();
 
-//                System.out.println("AllSourcesLoader received: " + sb);
-
-//                parseJSON(sb.toString());
-//                if (regionMap != null) {
-//                    mainActivity.runOnUiThread(() -> mainActivity.setupRegions(regionMap));
-//                }
             } else {
 
                 BufferedReader reader =
@@ -78,8 +70,6 @@ public class AllSourcesLoader implements  Runnable {
                 }
                 conn.disconnect();
 
-//                HashMap<String, HashSet<String>> returnedVal =  parseJSON(sb.toString());
-//                System.out.println("Parse ret received: " + sb);
                 Log.d(TAG, "run: " + sb.toString());
 
 
@@ -88,6 +78,8 @@ public class AllSourcesLoader implements  Runnable {
             JSONObject jsonResponse = new JSONObject(sb.toString());
             String storyStr = jsonResponse.getString("sources");
             ArrayList<Story> storyObjects = parseJSON(storyStr);
+
+            System.out.println("Story Objects are: " + storyObjects);
 
             if (storyObjects != null) {
                 mainActivity.runOnUiThread(() -> mainActivity.setupStories(storyObjects));
@@ -128,13 +120,9 @@ public class AllSourcesLoader implements  Runnable {
                 String language = story.getString("language");
                 String category = story.getString("category");
 
-                Story newStory = new Story(id, name, description, url, country, language, category);
+                Story newStory = new Story(id, name, description, url, category, language, country);
                 storyArrayList.add(newStory);
 
-//                HashSet<String> rSet = regionMap.get(region);
-//                if (rSet != null) {
-//                    rSet.add(subRegion);
-//                }
             }
             return storyArrayList;
         } catch (

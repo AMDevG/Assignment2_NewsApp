@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private final HashMap<String, ArrayList<String>> newsData = new HashMap<>();
     private Menu opt_menu;
+
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -44,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         if (newsData.isEmpty()) {
-            System.out.println("newsData Hashmap is empty; Calling AllSourcesLoader");
+//            System.out.println("newsData Hashmap is empty; Calling AllSourcesLoader");
             new Thread(new AllSourcesLoader(this)).start();
         }
         setContentView(R.layout.activity_main);
@@ -84,20 +85,9 @@ public class MainActivity extends AppCompatActivity {
 
 ///NEED TO PASS IN HASHMAP FROM LOADER
     public void setupStories(ArrayList<Story> storiesIn) {
-        System.out.println("setupStories received this many: " + storiesIn.size());
-
-//        newsData.clear();
-
-//        for (String s : storiesIn.keySet()) {
-//            HashSet<String> hSet = storyMapIn.get(s);
-//            if (hSet == null)
-//                continue;
-//            ArrayList<String> topicList = new ArrayList<>(hSet);
-//            Collections.sort(topicList);
-////            storyMapIn.put(s, subRegions);
-//        }
-
-//        ArrayList<String> topicList = new ArrayList<>();
+        for(Story s : storiesIn){
+            System.out.println("Received: " + s.getCategory());
+        }
 
         for (Story s : storiesIn){
 
@@ -119,9 +109,13 @@ public class MainActivity extends AppCompatActivity {
 //        setSubMenus();
 
         Collections.sort(topicList);
+        System.out.println("In setupStories; Current topics: " + topicList);
 
-        MenuItem topicMenu = findViewById(R.id.topic_menu);
-//        SubMenu subMenu = topicMenu.getSubMenu();
+        opt_menu.clear();
+        onCreateOptionsMenu(opt_menu);
+
+
+//        topicMenu.).add("Added this in UI Update");
 
 //        Menu choiceMenu = findViewById(R.id.topic_menu);
 //        for (String s : topicList){
@@ -159,8 +153,11 @@ public class MainActivity extends AppCompatActivity {
         countrySubMenu.add("All");
         languageSubMenu.add("All");
 
-
-
+        if(topicList.size() > 0){
+            for(String s : topicList){
+                topicSubMenu.add(s);
+            }
+        }
         return true;
     }
 
