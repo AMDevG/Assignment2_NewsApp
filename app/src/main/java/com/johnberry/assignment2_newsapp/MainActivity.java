@@ -1,13 +1,18 @@
 package com.johnberry.assignment2_newsapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.res.Configuration;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +21,18 @@ import android.view.SubMenu;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,14 +42,14 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    private final HashMap<String, ArrayList<String>> newsData = new HashMap<>();
+    private final HashMap<String, ArrayList<String>> topicData = new HashMap<>();
     private Menu opt_menu;
 
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private List<Fragment> fragments;
-//    private MyPageAdapter pageAdapter;
+    private MyPageAdapter pageAdapter;
     private ViewPager pager;
     public static int screenWidth, screenHeight;
 
@@ -44,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (newsData.isEmpty()) {
+        if (topicData.isEmpty()) {
 //            System.out.println("newsData Hashmap is empty; Calling AllSourcesLoader");
             new Thread(new AllSourcesLoader(this)).start();
         }
@@ -56,16 +73,15 @@ public class MainActivity extends AppCompatActivity {
         screenWidth = size.x;
         screenHeight = size.y;
 
-        System.out.println("Loaded main Activity");
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mDrawerList = findViewById(R.id.drawer_list);
 
-//        mDrawerList.setOnItemClickListener(
-//                (parent, view, position, id) -> {
-//                    selectItem(position);
-//                    mDrawerLayout.closeDrawer(mDrawerList);
-//                }
-//        );
+        mDrawerList.setOnItemClickListener(
+                (parent, view, position, id) -> {
+                    selectItem(position);
+                    mDrawerLayout.closeDrawer(mDrawerList);
+                }
+        );
 
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,                  /* host Activity */
@@ -75,11 +91,9 @@ public class MainActivity extends AppCompatActivity {
         );
 
         fragments = new ArrayList<>();
-
+        pageAdapter = new MyPageAdapter(getSupportFragmentManager());
         pager = findViewById(R.id.viewpager);
-//        pager.setAdapter(pageAdapter);
-
-
+        pager.setAdapter(pageAdapter);
     }
 
 
@@ -88,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
         for(Story s : storiesIn){
             System.out.println("Received: " + s.getCategory());
         }
-
         for (Story s : storiesIn){
 
             String topic = s.getCategory();
@@ -106,26 +119,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-//        setSubMenus();
-
         Collections.sort(topicList);
-        System.out.println("In setupStories; Current topics: " + topicList);
+        Collections.sort(languageList);
+        Collections.sort(countryList);
+//
+//        System.out.println("In setupStories; Current topics: " + topicList);
 
         opt_menu.clear();
         onCreateOptionsMenu(opt_menu);
-
-
-//        topicMenu.).add("Added this in UI Update");
-
-//        Menu choiceMenu = findViewById(R.id.topic_menu);
-//        for (String s : topicList){
-////            subMenu.add(s);
-//        }
-
-//        ArrayList<String> lst = newsData.get(top.get(0));
-//        if (lst != null) {
-////            subRegionDisplayed.addAll(lst);
-//        }
 
 //        mDrawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_item, subRegionDisplayed));
 
@@ -133,6 +134,14 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
+    }
+
+    // RUNS WHEN A DRAWER ITEM IS SELECTED!! CALLS API TO GET INFO FOR STORY
+    private void selectItem(int position) {
+        pager.setBackground(null);
+//        currentSubRegion = subRegionDisplayed.get(position);
+//        new Thread(new SubRegionLoader(this, currentSubRegion)).start();
+        mDrawerLayout.closeDrawer(mDrawerList);
     }
 
     @Override
@@ -153,20 +162,79 @@ public class MainActivity extends AppCompatActivity {
         countrySubMenu.add("All");
         languageSubMenu.add("All");
 
-        if(topicList.size() > 0){
-            for(String s : topicList){
+        if(topicList.size() > 0) {
+            for (String s : topicList) {
                 topicSubMenu.add(s);
             }
-        }
+            for (String s : countryList) {
+                try {
+                    JSONArray countryCodes = translateCodes(s, 1);
+
+                    for (int i = 0; i < countryCodes.length(); i++) {
+                        JSONObject jCountry = countryCodes.getJSONObject(i);
+//                        System.out.println("Country Object: " + jCountry);
+                        String translatedName = jCountry.getString("name");
+//                        System.out.println("S: " + s + " " + jCountry.getString("code"));
+                        if (jCountry.getString("code").equalsIgnoreCase(s)) {
+                            countrySubMenu.add(translatedName);
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            for (String s : languageList) {
+                try {
+                    JSONArray languageCodes = translateCodes(s, 2);
+                    for (int i = 0; i < languageCodes.length(); i++) {
+                        JSONObject jLanguage = languageCodes.getJSONObject(i);
+//                        System.out.println("Country Object: " + jCountry);
+                        String translatedName = jLanguage.getString("name");
+//                        System.out.println("S: " + s + " " + jLanguage.getString("code"));
+                        if (jLanguage.getString("code").equalsIgnoreCase(s)) {
+                            languageSubMenu.add(translatedName);
+                        }
+
+                    }
+                }   catch(IOException e){
+                        e.printStackTrace();
+                    } catch(JSONException e){
+                        e.printStackTrace();
+                    }
+               }
+            }
         return true;
     }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            Log.d(TAG, "onOptionsItemSelected: mDrawerToggle " + item);
+            return true;
+        }
+        System.out.println("item selected: " + item);
+
+        setTitle(item.getTitle());
+
+//        subRegionDisplayed.clear();
+//        ArrayList<String> lst = regionData.get(item.getTitle().toString());
+//        if (lst != null) {
+//            subRegionDisplayed.addAll(lst);
+//        }
+
+//        ((ArrayAdapter) mDrawerList.getAdapter()).notifyDataSetChanged();
+        return super.onOptionsItemSelected(item);
+    }
+
+
 
     private void hideOption(int id)
     {
         MenuItem item = opt_menu.findItem(id);
         item.setVisible(false);
     }
-
 
     private void showOption(int id)
     {
@@ -185,4 +253,101 @@ public class MainActivity extends AppCompatActivity {
         MenuItem item = opt_menu.findItem(id);
         item.setIcon(iconRes);
     }
+
+    private JSONArray translateCodes(String codeIn, int typeCode) throws IOException, JSONException {
+        InputStream is;
+        JSONArray cleanJSON;
+
+        if(typeCode == 1) {
+             is = getResources().openRawResource(R.raw.country_codes);
+        }
+        else{
+             is = getResources().openRawResource(R.raw.language_codes);
+        }
+
+        Writer writer = new StringWriter();
+        char[] buffer = new char[1024];
+
+        try {
+            Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            int n;
+            while ((n = reader.read(buffer)) != -1) {
+                writer.write(buffer, 0, n);
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            is.close();
+        }
+
+        String jsonString = writer.toString();
+        JSONObject jsonCodes = new JSONObject(jsonString);
+
+        if(typeCode == 1) {
+             cleanJSON = jsonCodes.getJSONArray("countries");
+        }
+        else{
+             cleanJSON = jsonCodes.getJSONArray("languages");
+        }
+        return cleanJSON ;
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Pass any configuration change to the drawer toggls
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    private class MyPageAdapter extends FragmentPagerAdapter {
+        private long baseId = 0;
+
+
+        MyPageAdapter(FragmentManager fm) {
+            super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        }
+
+        @Override
+        public int getItemPosition(@NonNull Object object) {
+            return POSITION_NONE;
+        }
+
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+            return fragments.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return fragments.size();
+        }
+
+        @Override
+        public long getItemId(int position) {
+            // give an ID different from position when position has been changed
+            return baseId + position;
+        }
+
+        /**
+         * Notify that the position of a fragment has been changed.
+         * Create a new ID for each position to force recreation of the fragment
+         * @param n number of items which have been changed
+         */
+        void notifyChangeInPosition(int n) {
+            // shift the ID returned by getItemId outside the range of all previous fragments
+            baseId += getCount() + n;
+        }
+
+    }
+
 }

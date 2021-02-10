@@ -15,7 +15,6 @@ import java.util.Locale;
 public class StoryFragment extends Fragment {
 
     public StoryFragment(){
-
     }
 
     public static StoryFragment newInstance(Story story, int index, int max){
