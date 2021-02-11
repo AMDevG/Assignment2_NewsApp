@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> sourceList = new ArrayList<String>();
 
     private String topMenu;
+    private String currentSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
 
         opt_menu.clear();
         onCreateOptionsMenu(opt_menu);
+        setTitle("Globe News (" + String.format("%d%n", drawerArray.size()) + ")");
         mDrawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_item, drawerArray));
 
         if (getSupportActionBar() != null) {
@@ -198,6 +200,8 @@ public class MainActivity extends AppCompatActivity {
         pager.setBackground(null);
         String itemSelected = drawerArray.get(position);
 
+        currentSource = itemSelected.toString();
+        setTitle(currentSource);
 
         for (Story s : storyMaster) {
             if (s.getSourceName().equalsIgnoreCase(itemSelected)) {
@@ -220,6 +224,7 @@ public class MainActivity extends AppCompatActivity {
         SubMenu topicSubMenu = topicItem.getSubMenu();
         SubMenu countrySubMenu = countryItem.getSubMenu();
         SubMenu languageSubMenu = languageItem.getSubMenu();
+
 
         topicSubMenu.add("All topics");
         countrySubMenu.add("All countries");
@@ -298,7 +303,6 @@ public class MainActivity extends AppCompatActivity {
 
         String selectedFilter = item.toString();
 //        selectedFilters.clear();
-
 
 
         if (mDrawerToggle.onOptionsItemSelected(item)) {
