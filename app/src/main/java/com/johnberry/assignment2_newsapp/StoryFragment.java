@@ -77,6 +77,7 @@ public class StoryFragment extends Fragment {
 
             titleTextview.setOnClickListener(v -> clickFlag(currentStory.getUrl()));
             articleImageView.setOnClickListener(v -> clickFlag(currentStory.getUrl()));
+            descriptionTextView.setOnClickListener(v -> clickFlag(currentStory.getUrl()));
 
 
             return fragment_layout;
