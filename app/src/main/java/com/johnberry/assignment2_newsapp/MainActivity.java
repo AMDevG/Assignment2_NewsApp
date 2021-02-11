@@ -45,13 +45,14 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private final HashMap<String, ArrayList<String>> topicData = new HashMap<>();
     private Menu opt_menu;
+
     private final ArrayList<String> drawerArray = new ArrayList<>();
     private HashMap<String, ArrayList<Story>> languageMap = new HashMap<>();
     private HashMap<String, ArrayList<Story>> countryMap = new HashMap<>();
     private HashMap<String, ArrayList<Story>> topicMap = new HashMap<>();
     private HashMap<String, ArrayList<Story>> sourceMap = new HashMap<>();
     private ArrayList<Story> storyMaster = new ArrayList<Story>();
-//    private ArrayList<String> selectedFilters = new ArrayList<>();
+
     private HashMap<String, String> selectedFilters = new HashMap<>();
 
     private HashMap<String, String> languageCodeMap = new HashMap<String, String>();
@@ -65,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager pager;
     public static int screenWidth, screenHeight;
     private String sourceID;
-//    String selectedFilter;
 
     private ArrayList<String> topicList = new ArrayList<String>();
     private ArrayList<String> countryList = new ArrayList<String>();
@@ -80,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         if (topicData.isEmpty()) {
-//            System.out.println("newsData Hashmap is empty; Calling AllSourcesLoader");
             new Thread(new AllSourcesLoader(this)).start();
         }
         setContentView(R.layout.activity_main);
@@ -114,12 +113,7 @@ public class MainActivity extends AppCompatActivity {
         pager.setAdapter(pageAdapter);
     }
 
-
-
-///NEED TO PASS IN HASHMAP FROM LOADER
     public void setupStories(ArrayList<Story> storiesIn) {
-
-        // Setup Hashmap to populate drawer adapter
 
         for (Story s : storiesIn){
             storyMaster.add(s);
@@ -127,7 +121,6 @@ public class MainActivity extends AppCompatActivity {
             String language = s.getLanguage();
             String country = s.getCountry();
             String source = s.getSourceName();
-
 
             // Sets up options submenus
             if(!topicList.contains(topic)) {
@@ -153,7 +146,6 @@ public class MainActivity extends AppCompatActivity {
         Collections.sort(sourceList);
 
         for(String s : topicList){
-
             ArrayList<Story> mapList = new ArrayList<Story>();
             for(Story story : storiesIn){
                 if(story.getCategory().equalsIgnoreCase(s)){
@@ -162,7 +154,6 @@ public class MainActivity extends AppCompatActivity {
             topicMap.put(s,mapList);
             }
         }
-
         for(String s : countryList){
             ArrayList<Story> mapList = new ArrayList<Story>();
             for(Story story : storiesIn){
@@ -172,7 +163,6 @@ public class MainActivity extends AppCompatActivity {
                 countryMap.put(s,mapList);
             }
         }
-
         for(String s : languageList){
             ArrayList<Story> mapList = new ArrayList<Story>();
             for(Story story : storiesIn){
@@ -182,7 +172,6 @@ public class MainActivity extends AppCompatActivity {
                 languageMap.put(s,mapList);
             }
         }
-
 
         opt_menu.clear();
         onCreateOptionsMenu(opt_menu);
@@ -225,7 +214,6 @@ public class MainActivity extends AppCompatActivity {
         SubMenu countrySubMenu = countryItem.getSubMenu();
         SubMenu languageSubMenu = languageItem.getSubMenu();
 
-
         topicSubMenu.add("All topics");
         countrySubMenu.add("All countries");
         languageSubMenu.add("All languages");
@@ -240,9 +228,7 @@ public class MainActivity extends AppCompatActivity {
 
                     for (int i = 0; i < countryCodes.length(); i++) {
                         JSONObject jCountry = countryCodes.getJSONObject(i);
-//                        System.out.println("Country Object: " + jCountry);
                         String translatedName = jCountry.getString("name");
-//                        System.out.println("S: " + s + " " + jCountry.getString("code"));
                         if (jCountry.getString("code").equalsIgnoreCase(s)) {
                             countrySubMenu.add(translatedName);
                         }
@@ -258,13 +244,10 @@ public class MainActivity extends AppCompatActivity {
                     JSONArray languageCodes = translateCodes(s, 2);
                     for (int i = 0; i < languageCodes.length(); i++) {
                         JSONObject jLanguage = languageCodes.getJSONObject(i);
-//                        System.out.println("Country Object: " + jCountry);
                         String translatedName = jLanguage.getString("name");
-//                        System.out.println("S: " + s + " " + jLanguage.getString("code"));
                         if (jLanguage.getString("code").equalsIgnoreCase(s)) {
                             languageSubMenu.add(translatedName);
                         }
-
                     }
                 }   catch(IOException e){
                         e.printStackTrace();
@@ -277,10 +260,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // CALLED FROM SourceLoaderRunnable LOADER after drawer selection made
-
     public void setStoryFragments(ArrayList<Article> storyList) {
-
-//        setTitle(storyList.get(0).get);
 
         for (int i = 0; i < pageAdapter.getCount(); i++)
             pageAdapter.notifyChangeInPosition(i);
@@ -291,19 +271,13 @@ public class MainActivity extends AppCompatActivity {
             fragments.add(
                     StoryFragment.newInstance(storyList.get(i), i+1, storyList.size()));
         }
-
         pageAdapter.notifyDataSetChanged();
         pager.setCurrentItem(0);
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
         String currMenu;
-
-//        System.out.println("topMenu is: " + topMenu);
-
         String selectedFilter = item.toString();
-//        selectedFilters.clear();
-
 
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             Log.d(TAG, "onOptionsItemSelected: mDrawerToggle " + item);
@@ -318,7 +292,6 @@ public class MainActivity extends AppCompatActivity {
                 else{
                     selectedFilters.put("topic", s);
                 }
-
             }
         }
 
@@ -339,7 +312,6 @@ public class MainActivity extends AppCompatActivity {
         for(String s : languageList){
             String upperS = s.toUpperCase();
             String translatedLanguage = languageCodeMap.get(upperS);
-//            System.out.println("selectedFilter" + selectedFilter + " translated: " + translatedLanguage);
 
             if(selectedFilter.equalsIgnoreCase(translatedLanguage)){
                 if(selectedFilters.containsKey("language")){
@@ -351,30 +323,24 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-
-
         drawerArray.clear();
 
         switch(item.toString()){
             case "Topics":
                 currMenu = "Topics";
                 topMenu = currMenu;
-//                selectedFilters.remove("topic");
                 break;
             case "Countries":
                 currMenu = "Countries";
                 topMenu = currMenu;
-//                selectedFilters.remove("country");
                 break;
             case "Languages":
                 currMenu = "Languages";
                 topMenu = currMenu;
-//                selectedFilters.remove("language");
                 break;
         }
 
         String topicVal, countryVal, langVal;
-
         topicVal = selectedFilters.get("topic");
         countryVal = selectedFilters.get("country");
         langVal = selectedFilters.get("language");
@@ -400,8 +366,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
         if(selectedFilter =="All topics"){
-//            System.out.println("Reset all Topics");
-//            selectedFilters.put("topic", selectedFilter);
             selectedFilters.remove("topic");
             topicFlag = 0;
             topicVal = null;
@@ -417,24 +381,15 @@ public class MainActivity extends AppCompatActivity {
             langVal = null;
         }
 
-        System.out.println("Selected Filter is: " + selectedFilter);
-        System.out.println("Current flags are: ");
-        System.out.println("TopicFlag: " + topicFlag + " val:" + topicVal);
-        System.out.println("CountryFlag: " + countryFlag + " val: " + countryVal);
-        System.out.println("LangFlag: " + langFlag + " val: " + langVal);
-
             for(Story story : storyMaster){
-
                 if (langFlag == 0 && topicFlag == 0 && countryFlag == 0){
                     drawerArray.add(story.getSourceName());
                 }
-
                 if (langFlag == 1 && topicFlag == 1 && countryFlag == 1){
                     if(story.getCategory().equalsIgnoreCase(topicVal) && story.getCountry().equalsIgnoreCase(countryVal) && story.getLanguage().equalsIgnoreCase(langVal)){
                         drawerArray.add(story.getSourceName());
                     }
                 }
-
                 else if(langFlag == 1 && topicFlag == 1 && countryFlag == 0){
                     if(story.getCategory().equalsIgnoreCase(topicVal) && story.getLanguage().equalsIgnoreCase(langVal)){
                         drawerArray.add(story.getSourceName());
@@ -445,26 +400,21 @@ public class MainActivity extends AppCompatActivity {
                         drawerArray.add(story.getSourceName());
                     }
                 }
-
                 else if(langFlag == 0 && topicFlag == 1 && countryFlag == 1){
                     if(story.getCategory().equalsIgnoreCase(topicVal) && story.getCountry().equalsIgnoreCase(countryVal)){
                         drawerArray.add(story.getSourceName());
                     }
                 }
-
                 else if(langFlag == 0 && topicFlag == 0 && countryFlag == 1){
                     if(story.getCountry().equalsIgnoreCase(countryVal)){
                         drawerArray.add(story.getSourceName());
                     }
                 }
-
                 else if(langFlag == 1 && topicFlag == 0 && countryFlag == 1){
                     if(story.getLanguage().equalsIgnoreCase(langVal) && story.getCountry().equalsIgnoreCase(countryVal)){
                         drawerArray.add(story.getSourceName());
                     }
-
                 }
-
                 else if(langFlag == 0 && topicFlag == 1 && countryFlag == 0){
                     if(story.getCategory().equalsIgnoreCase(topicVal)){
                         drawerArray.add(story.getSourceName());
@@ -475,12 +425,9 @@ public class MainActivity extends AppCompatActivity {
         ((ArrayAdapter) mDrawerList.getAdapter()).notifyDataSetChanged();
         mDrawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_item, drawerArray));
 
-
         setTitle("Globe News (" + String.format("%d%n", drawerArray.size()) + ")");
         return super.onOptionsItemSelected(item);
     }
-
-
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -553,7 +500,6 @@ public class MainActivity extends AppCompatActivity {
             }
             return cleanJSONLang ;
         }
-
     }
 
     private class MyPageAdapter extends FragmentPagerAdapter {
@@ -585,11 +531,6 @@ public class MainActivity extends AppCompatActivity {
             return baseId + position;
         }
 
-        /**
-         * Notify that the position of a fragment has been changed.
-         * Create a new ID for each position to force recreation of the fragment
-         * @param n number of items which have been changed
-         */
         void notifyChangeInPosition(int n) {
             // shift the ID returned by getItemId outside the range of all previous fragments
             baseId += getCount() + n;

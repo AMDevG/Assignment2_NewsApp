@@ -31,16 +31,14 @@ public class StoryFragment extends Fragment {
         bdl.putSerializable("INDEX", index);
         bdl.putSerializable("TOTAL_COUNT", max);
         f.setArguments(bdl);
-//        System.out.println("New Fragement Created size: " + max);
         return f;
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View fragment_layout = inflater.inflate(R.layout.fragment_article, container, false);
 
+        View fragment_layout = inflater.inflate(R.layout.fragment_article, container, false);
 
         Bundle args = getArguments();
         if (args != null) {
@@ -53,7 +51,6 @@ public class StoryFragment extends Fragment {
 
 
             TextView titleTextview = fragment_layout.findViewById(R.id.titleTextView);
-
             TextView publishedAtTextView = fragment_layout.findViewById(R.id.publishedAtTextView);
             TextView authorTextView = fragment_layout.findViewById(R.id.authorTextView);
             ImageView articleImageView = fragment_layout.findViewById(R.id.articleImageView);
@@ -77,7 +74,6 @@ public class StoryFragment extends Fragment {
                     articleImageView.setImageBitmap(currentStory.getBitmap());
                 }
 
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -86,19 +82,11 @@ public class StoryFragment extends Fragment {
             articleImageView.setOnClickListener(v -> clickFlag(currentStory.getUrl()));
             descriptionTextView.setOnClickListener(v -> clickFlag(currentStory.getUrl()));
 
-
             return fragment_layout;
         } else {
             return null;
         }
     }
-
-//    private Bitmap downloadImage(String imageURL) throws IOException {
-//        InputStream is = (InputStream) new URL(imageURL).getContent();
-//        Bitmap bm = BitmapFactory.decodeStream(is);
-//        is.close();
-//        return bm;
-//    }
 
     public void clickFlag(String name) {
         Intent intent = new Intent();

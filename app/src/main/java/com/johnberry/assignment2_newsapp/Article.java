@@ -25,7 +25,6 @@ public class Article implements Serializable {
         this.urlToImage = urlToImage;
         this.publishedAt = publishedAt;
         downloadDrawable(urlToImage);
-
     }
 
     public String getUrl() {
@@ -65,8 +64,5 @@ public class Article implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
-
 }

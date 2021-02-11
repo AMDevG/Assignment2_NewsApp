@@ -30,13 +30,10 @@ public class SourceLoaderRunnable implements Runnable {
 
     private ArrayList<Article> articleArrayList = new ArrayList<Article>();
 
-
     SourceLoaderRunnable(MainActivity ma, String sourceID) {
         mainActivity = ma;
         this.sourceID = sourceID;
-
     }
-
 
     @Override
     public void run() {
@@ -74,20 +71,15 @@ public class SourceLoaderRunnable implements Runnable {
                 conn.disconnect();
 
                 Log.d(TAG, "run: " + sb.toString());
-
-
             }
 
             JSONObject jsonResponse = new JSONObject(sb.toString());
             String storyStr = jsonResponse.getString("articles");
             ArrayList<Article> storyObjects = parseJSON(storyStr);
 
-
             if (storyObjects != null) {
                 mainActivity.runOnUiThread(() -> mainActivity.setStoryFragments(storyObjects));
             }
-
-
 
         } catch (ProtocolException e) {
             e.printStackTrace();
@@ -107,9 +99,6 @@ public class SourceLoaderRunnable implements Runnable {
 
             for (int i = 0; i < jObjMain.length(); i++) {
                 JSONObject story = (JSONObject) jObjMain.get(i);
-//                System.out.println("Parser processing article: " + story);
-//                System.out.println("---------------------------------");
-
                 String author = story.getString("author");
                 String title = story.getString("title");
                 String url = story.getString("url");
@@ -117,10 +106,8 @@ public class SourceLoaderRunnable implements Runnable {
                 String description = story.getString("description");
                 String publishedAt = story.getString("publishedAt");
 
-//
                 Article newArticle = new Article(author, title, description, url, urlToImage, publishedAt);
                 articleArrayList.add(newArticle);
-
             }
             return articleArrayList;
         } catch (

@@ -30,7 +30,6 @@ public class AllSourcesLoader implements  Runnable {
 
     private ArrayList<Story> storyArrayList = new ArrayList<Story>();
 
-
     AllSourcesLoader(MainActivity ma) {
         mainActivity = ma;
     }
@@ -71,21 +70,15 @@ public class AllSourcesLoader implements  Runnable {
                 conn.disconnect();
 
                 Log.d(TAG, "run: " + sb.toString());
-
-
             }
 
             JSONObject jsonResponse = new JSONObject(sb.toString());
             String storyStr = jsonResponse.getString("sources");
             ArrayList<Story> storyObjects = parseJSON(storyStr);
 
-//            System.out.println("Story Objects are: " + storyObjects);
-
             if (storyObjects != null) {
                 mainActivity.runOnUiThread(() -> mainActivity.setupStories(storyObjects));
             }
-
-
 
         } catch (ProtocolException e) {
             e.printStackTrace();
@@ -98,19 +91,15 @@ public class AllSourcesLoader implements  Runnable {
         }
     }
 
-
     private ArrayList<Story> parseJSON(String s) {
 
         HashMap<String, HashSet<String>> storyMap = new HashMap<>();
-
 
         try {
             JSONArray jObjMain = new JSONArray(s);
 
             for (int i = 0; i < jObjMain.length(); i++) {
                 JSONObject story = (JSONObject) jObjMain.get(i);
-//                System.out.println("Parser processing story: " + story);
-//                System.out.println("---------------------------------");
 
                 String id = story.getString("id");
                 String name = story.getString("name");
@@ -122,7 +111,6 @@ public class AllSourcesLoader implements  Runnable {
 
                 Story newStory = new Story(id, name, description, url, category, language, country);
                 storyArrayList.add(newStory);
-
             }
             return storyArrayList;
         } catch (
@@ -131,5 +119,4 @@ public class AllSourcesLoader implements  Runnable {
         }
         return null;
     }
-
 }

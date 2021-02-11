@@ -7,7 +7,6 @@ public class Story implements Serializable {
     private String id, name, description, url, category, language, country;
 
     Story(String id, String name, String description, String url, String category, String language, String country){
-
         this.id = id;
         this.name = name;
         this.description = description;
