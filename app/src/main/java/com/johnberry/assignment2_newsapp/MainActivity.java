@@ -51,7 +51,8 @@ public class MainActivity extends AppCompatActivity {
     private HashMap<String, ArrayList<Story>> topicMap = new HashMap<>();
     private HashMap<String, ArrayList<Story>> sourceMap = new HashMap<>();
     private ArrayList<Story> storyMaster = new ArrayList<Story>();
-    private ArrayList<String> selectedFilters = new ArrayList<>();
+//    private ArrayList<String> selectedFilters = new ArrayList<>();
+    private HashMap<String, String> selectedFilters = new HashMap<>();
 
     private HashMap<String, String> languageCodeMap = new HashMap<String, String>();
     private HashMap<String, String> countryCodeMap = new HashMap<String, String>();
@@ -303,7 +304,13 @@ public class MainActivity extends AppCompatActivity {
         for(String s : topicList){
 
             if(selectedFilter.equalsIgnoreCase(s)){
-                selectedFilters.add(selectedFilter);
+                if(selectedFilters.containsKey("topic")){
+                    selectedFilters.replace("topic", s);
+                }
+                else{
+                    selectedFilters.put("topic", s);
+                }
+
             }
         }
 
@@ -312,7 +319,12 @@ public class MainActivity extends AppCompatActivity {
             String translatedCountry = countryCodeMap.get(upperS);
 
             if(selectedFilter.equalsIgnoreCase(translatedCountry)){
-                selectedFilters.add(upperS);
+                if(selectedFilters.containsKey("country")){
+                    selectedFilters.replace("country", s);
+                }
+                else{
+                    selectedFilters.put("country", s);
+                }
             }
         }
 
@@ -321,15 +333,17 @@ public class MainActivity extends AppCompatActivity {
             String translatedLanguage = languageCodeMap.get(upperS);
 
             if(selectedFilter.equalsIgnoreCase(translatedLanguage)){
-                selectedFilters.add(upperS);
+                if(selectedFilters.containsKey("language")){
+                    selectedFilters.replace("language", s);
+                }
+                else{
+                    selectedFilters.put("language", s);
+                }
             }
         }
 
-        System.out.println("Selected filters are: ");
+        System.out.println("Selected filters are: " + selectedFilters.values());
 
-        for(String s : selectedFilters){
-            System.out.println(s);
-        }
 
 
         setTitle(item.getTitle());
@@ -338,15 +352,15 @@ public class MainActivity extends AppCompatActivity {
         drawerArray.clear();
 
         // Adds stories to drawer array based on filter criteria
-        for(String filter : selectedFilters){
+        for(String key : selectedFilters.keySet()){
             for(Story story : storyMaster){
-                if(story.getCategory().equalsIgnoreCase(filter)){
+                if(story.getCategory().equalsIgnoreCase(selectedFilters.get(key))){
                     drawerArray.add(story.getSourceName());
                 }
-                else if(story.getCountry().equalsIgnoreCase(filter)){
+                else if(story.getCountry().equalsIgnoreCase(selectedFilters.get(key))){
                     drawerArray.add(story.getSourceName());
                 }
-                else if(story.getLanguage().equalsIgnoreCase(filter)){
+                else if(story.getLanguage().equalsIgnoreCase(selectedFilters.get(key))){
                     drawerArray.add(story.getSourceName());
                 }
             }
