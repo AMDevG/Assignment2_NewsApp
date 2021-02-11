@@ -310,21 +310,18 @@ public class MainActivity extends AppCompatActivity {
         for(String s : countryList){
             String upperS = s.toUpperCase();
             String translatedCountry = countryCodeMap.get(upperS);
-//            System.out.println(countryCodeMap.keySet());
-
-//            System.out.println("s is: " + s + " trsnStr: " + translatedString);
-
 
             if(selectedFilter.equalsIgnoreCase(translatedCountry)){
-//                translatedString = countryCodeMap.get(selectedFilter);
-//                System.out.println("Translated str: " + translatedString);
                 selectedFilters.add(upperS);
-
             }
         }
+
         for(String s : languageList){
-            if(selectedFilter.equalsIgnoreCase(s)){
-                selectedFilters.add(selectedFilter);
+            String upperS = s.toUpperCase();
+            String translatedLanguage = languageCodeMap.get(upperS);
+
+            if(selectedFilter.equalsIgnoreCase(translatedLanguage)){
+                selectedFilters.add(upperS);
             }
         }
 
