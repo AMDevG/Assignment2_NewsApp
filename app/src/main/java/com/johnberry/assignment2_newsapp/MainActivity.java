@@ -331,6 +331,7 @@ public class MainActivity extends AppCompatActivity {
         for(String s : languageList){
             String upperS = s.toUpperCase();
             String translatedLanguage = languageCodeMap.get(upperS);
+            System.out.println("selectedFilter" + selectedFilter + " tranlated: " + translatedLanguage);
 
             if(selectedFilter.equalsIgnoreCase(translatedLanguage)){
                 if(selectedFilters.containsKey("language")){
@@ -400,6 +401,7 @@ public class MainActivity extends AppCompatActivity {
     private JSONArray translateCodes(String codeIn, int typeCode) throws IOException, JSONException {
         InputStream is;
         JSONArray cleanJSON;
+        JSONArray cleanJSONLang;
 
         //Create global hashmap of country and languagecodes;
 
@@ -439,15 +441,21 @@ public class MainActivity extends AppCompatActivity {
                  String name = codeObj.getString("name");
                  countryCodeMap.put(code, name);
              }
-//
-//             System.out.println("Country Code Map: " + countryCodeMap);
-//             System.out.println("PuertoRico Code: " + countryCodeMap.get("Puerto Rico"));
 
+             return cleanJSON;
         }
         else{
-             cleanJSON = jsonCodes.getJSONArray("languages");
+             cleanJSONLang = jsonCodes.getJSONArray("languages");
+
+            for(int i = 0; i < cleanJSONLang.length(); i++){
+                JSONObject codeObj = (JSONObject) cleanJSONLang.get(i);
+                String code = codeObj.getString("code");
+                String name = codeObj.getString("name");
+                languageCodeMap.put(code, name);
+            }
+            return cleanJSONLang ;
         }
-        return cleanJSON ;
+
     }
 
     @Override
