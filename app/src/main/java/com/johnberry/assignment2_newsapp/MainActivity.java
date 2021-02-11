@@ -294,10 +294,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         String currMenu;
 
-        System.out.println("topMenu is: " + topMenu);
+//        System.out.println("topMenu is: " + topMenu);
 
         String selectedFilter = item.toString();
 //        selectedFilters.clear();
+
+
 
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             Log.d(TAG, "onOptionsItemSelected: mDrawerToggle " + item);
@@ -353,17 +355,17 @@ public class MainActivity extends AppCompatActivity {
             case "Topics":
                 currMenu = "Topics";
                 topMenu = currMenu;
-                selectedFilters.remove("topic");
+//                selectedFilters.remove("topic");
                 break;
             case "Countries":
                 currMenu = "Countries";
                 topMenu = currMenu;
-                selectedFilters.remove("country");
+//                selectedFilters.remove("country");
                 break;
             case "Languages":
                 currMenu = "Languages";
                 topMenu = currMenu;
-                selectedFilters.remove("language");
+//                selectedFilters.remove("language");
                 break;
         }
 
@@ -394,19 +396,24 @@ public class MainActivity extends AppCompatActivity {
             }
 
         if(selectedFilter =="All topics"){
-            System.out.println("Reset all Topics");
+//            System.out.println("Reset all Topics");
+//            selectedFilters.put("topic", selectedFilter);
+            selectedFilters.remove("topic");
             topicFlag = 0;
-            topicVal = "";
+            topicVal = null;
         }
         else if(selectedFilter =="All countries"){
-            System.out.println("Reset all Countries");
+//            System.out.println("Reset all Countries");
+//            selectedFilters.put("country", selectedFilter);
+            selectedFilters.remove("country");
             countryFlag = 0;
-            countryVal = "";
+            countryVal = null;
         }
         else if(selectedFilter =="All languages"){
-            System.out.println("Reset all Langs");
+//            System.out.println("Reset all Langs");
+            selectedFilters.remove("language");
             langFlag = 0;
-            langVal = "";
+            langVal = null;
         }
 
         System.out.println("Selected Filter is: " + selectedFilter);
