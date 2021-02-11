@@ -59,6 +59,8 @@ public class StoryFragment extends Fragment {
             ImageView articleImageView = fragment_layout.findViewById(R.id.articleImageView);
             TextView descriptionTextView = fragment_layout.findViewById(R.id.descriptionTextView);
 
+            articleImageView.setImageDrawable(getResources().getDrawable(R.drawable.loading));
+
             titleTextview.setText(currentStory.getTitle());
             publishedAtTextView.setText(currentStory.getPublishedAt());
             authorTextView.setText(currentStory.getAuthor());
@@ -68,7 +70,12 @@ public class StoryFragment extends Fragment {
             pageNum.setText(String.format(Locale.US, "%d of %d", index, total));
 
             try {
-                articleImageView.setImageBitmap(currentStory.getBitmap());
+                if(currentStory.getBitmap() == null){
+                    articleImageView.setImageDrawable(getResources().getDrawable(R.drawable.noimage));
+                }
+                else {
+                    articleImageView.setImageBitmap(currentStory.getBitmap());
+                }
 
 
             } catch (Exception e) {
