@@ -72,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> languageList = new ArrayList<String>();
     private ArrayList<String> sourceList = new ArrayList<String>();
 
+    private String topMenu;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -290,8 +292,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
+        String currMenu;
+
+        System.out.println("topMenu is: " + topMenu);
 
         String selectedFilter = item.toString();
+//        selectedFilters.clear();
 
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             Log.d(TAG, "onOptionsItemSelected: mDrawerToggle " + item);
@@ -342,6 +348,24 @@ public class MainActivity extends AppCompatActivity {
         setTitle(item.getTitle());
 
         drawerArray.clear();
+
+        switch(item.toString()){
+            case "Topics":
+                currMenu = "Topics";
+                topMenu = currMenu;
+                selectedFilters.remove("topic");
+                break;
+            case "Countries":
+                currMenu = "Countries";
+                topMenu = currMenu;
+                selectedFilters.remove("country");
+                break;
+            case "Languages":
+                currMenu = "Languages";
+                topMenu = currMenu;
+                selectedFilters.remove("language");
+                break;
+        }
 
         String topicVal, countryVal, langVal;
 
