@@ -39,6 +39,7 @@ public class StoryFragment extends Fragment {
         // Inflate the layout for this fragment
         View fragment_layout = inflater.inflate(R.layout.fragment_article, container, false);
 
+
         Bundle args = getArguments();
         if (args != null) {
             final Article currentStory = (Article) args.getSerializable("STORY_DATA");
@@ -47,6 +48,7 @@ public class StoryFragment extends Fragment {
             }
             int index = args.getInt("INDEX");
             int total = args.getInt("TOTAL_COUNT");
+
 
             TextView titleTextview = fragment_layout.findViewById(R.id.titleTextView);
             TextView publishedAtTextView = fragment_layout.findViewById(R.id.publishedAtTextView);

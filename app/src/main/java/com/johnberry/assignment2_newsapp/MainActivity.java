@@ -275,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void setStoryFragments(ArrayList<Article> storyList) {
 
-//        setTitle(currentSubRegion);
+//        setTitle(storyList.get(0).get);
 
         for (int i = 0; i < pageAdapter.getCount(); i++)
             pageAdapter.notifyChangeInPosition(i);
@@ -347,7 +347,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        setTitle(item.getTitle());
+
 
         drawerArray.clear();
 
@@ -403,14 +403,11 @@ public class MainActivity extends AppCompatActivity {
             topicVal = null;
         }
         else if(selectedFilter =="All countries"){
-//            System.out.println("Reset all Countries");
-//            selectedFilters.put("country", selectedFilter);
             selectedFilters.remove("country");
             countryFlag = 0;
             countryVal = null;
         }
         else if(selectedFilter =="All languages"){
-//            System.out.println("Reset all Langs");
             selectedFilters.remove("language");
             langFlag = 0;
             langVal = null;
@@ -423,6 +420,10 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("LangFlag: " + langFlag + " val: " + langVal);
 
             for(Story story : storyMaster){
+
+                if (langFlag == 0 && topicFlag == 0 && countryFlag == 0){
+                    drawerArray.add(story.getSourceName());
+                }
 
                 if (langFlag == 1 && topicFlag == 1 && countryFlag == 1){
                     if(story.getCategory().equalsIgnoreCase(topicVal) && story.getCountry().equalsIgnoreCase(countryVal) && story.getLanguage().equalsIgnoreCase(langVal)){
@@ -469,6 +470,9 @@ public class MainActivity extends AppCompatActivity {
 
         ((ArrayAdapter) mDrawerList.getAdapter()).notifyDataSetChanged();
         mDrawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_item, drawerArray));
+
+
+        setTitle("Globe News (" + String.format("%d%n", drawerArray.size()) + ")");
         return super.onOptionsItemSelected(item);
     }
 
@@ -495,7 +499,6 @@ public class MainActivity extends AppCompatActivity {
         JSONArray cleanJSONLang;
 
         //Create global hashmap of country and languagecodes;
-
         if(typeCode == 1) {
             is = getResources().openRawResource(R.raw.country_codes);
         }
@@ -552,7 +555,6 @@ public class MainActivity extends AppCompatActivity {
     private class MyPageAdapter extends FragmentPagerAdapter {
         private long baseId = 0;
 
-
         MyPageAdapter(FragmentManager fm) {
             super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         }
@@ -588,7 +590,5 @@ public class MainActivity extends AppCompatActivity {
             // shift the ID returned by getItemId outside the range of all previous fragments
             baseId += getCount() + n;
         }
-
     }
-
 }

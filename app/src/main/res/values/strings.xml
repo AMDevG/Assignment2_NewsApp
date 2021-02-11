@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Assignment2_NewsApp</string>
+    <string name="app_name">News Globe</string>
     <string name="drawer_open">Open drawer</string>
     <string name="drawer_close">Drawer closed</string>
 </resources>
