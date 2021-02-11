@@ -14,7 +14,7 @@ import java.net.URL;
 public class Article implements Serializable {
 
     private String author, title, description, url, urlToImage, publishedAt;
-    private Bitmap bitmap;
+    private transient Bitmap bitmap;
 
     Article(String author, String title, String description, String url, String urlToImage, String publishedAt){
 

@@ -85,12 +85,12 @@ public class StoryFragment extends Fragment {
         }
     }
 
-    private Bitmap downloadImage(String imageURL) throws IOException {
-        InputStream is = (InputStream) new URL(imageURL).getContent();
-        Bitmap bm = BitmapFactory.decodeStream(is);
-        is.close();
-        return bm;
-    }
+//    private Bitmap downloadImage(String imageURL) throws IOException {
+//        InputStream is = (InputStream) new URL(imageURL).getContent();
+//        Bitmap bm = BitmapFactory.decodeStream(is);
+//        is.close();
+//        return bm;
+//    }
 
     public void clickFlag(String name) {
         Intent intent = new Intent();
