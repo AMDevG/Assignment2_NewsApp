@@ -1,7 +1,9 @@
 package com.johnberry.assignment2_newsapp;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +53,7 @@ public class StoryFragment extends Fragment {
 
 
             TextView titleTextview = fragment_layout.findViewById(R.id.titleTextView);
+
             TextView publishedAtTextView = fragment_layout.findViewById(R.id.publishedAtTextView);
             TextView authorTextView = fragment_layout.findViewById(R.id.authorTextView);
             ImageView articleImageView = fragment_layout.findViewById(R.id.articleImageView);
@@ -72,7 +75,10 @@ public class StoryFragment extends Fragment {
                 e.printStackTrace();
             }
 
-//            imageView.setOnClickListener(v -> clickFlag(currentCountry.getName()));
+            titleTextview.setOnClickListener(v -> clickFlag(currentStory.getUrl()));
+            articleImageView.setOnClickListener(v -> clickFlag(currentStory.getUrl()));
+
+
             return fragment_layout;
         } else {
             return null;
@@ -84,5 +90,13 @@ public class StoryFragment extends Fragment {
         Bitmap bm = BitmapFactory.decodeStream(is);
         is.close();
         return bm;
+    }
+
+    public void clickFlag(String name) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.addCategory(Intent.CATEGORY_BROWSABLE);
+        intent.setData(Uri.parse(name));
+        startActivity(intent);
     }
 }

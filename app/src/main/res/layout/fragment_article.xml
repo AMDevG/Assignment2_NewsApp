@@ -29,6 +29,8 @@
         android:layout_height="89dp"
         android:layout_marginStart="48dp"
         android:layout_marginTop="16dp"
+        android:autoLink="all"
+        android:clickable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/authorTextView"
         tools:srcCompat="@tools:sample/avatars" />
@@ -39,6 +41,8 @@
         android:layout_height="110dp"
         android:layout_marginTop="20dp"
         android:gravity="center"
+        android:autoLink="all"
+        android:clickable="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/articleImageView" />
@@ -66,6 +70,8 @@
         android:gravity="center"
         android:text="TextView"
         android:textStyle="bold"
+        android:autoLink="all"
+        android:clickable="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
