@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private HashMap<String, ArrayList<Story>> topicMap = new HashMap<>();
     private HashMap<String, ArrayList<Story>> sourceMap = new HashMap<>();
     private ArrayList<Story> storyMaster = new ArrayList<>();
+    private String selectedFilter;
 
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -311,7 +312,21 @@ public class MainActivity extends AppCompatActivity {
         }
         System.out.println("item selected: " + item);
 
+        for(String s : topicList){
+            if(item.toString().equalsIgnoreCase(s)){
+                selectedFilter = item.toString();
+            }
+        }
         setTitle(item.getTitle());
+
+        drawerArray.clear();
+
+        for(Story story : storyMaster){
+            if(story.getCategory().equalsIgnoreCase(selectedFilter)){
+                drawerArray.add(story.getSourceName());
+            }
+        }
+
 
 //        subRegionDisplayed.clear();
 //        ArrayList<String> lst = regionData.get(item.getTitle().toString());
@@ -319,7 +334,8 @@ public class MainActivity extends AppCompatActivity {
 //            subRegionDisplayed.addAll(lst);
 //        }
 
-//        ((ArrayAdapter) mDrawerList.getAdapter()).notifyDataSetChanged();
+        ((ArrayAdapter) mDrawerList.getAdapter()).notifyDataSetChanged();
+        mDrawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_item, drawerArray));
         return super.onOptionsItemSelected(item);
     }
 
