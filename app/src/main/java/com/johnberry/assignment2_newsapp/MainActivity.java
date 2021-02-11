@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private HashMap<String, ArrayList<Story>> topicMap = new HashMap<>();
     private HashMap<String, ArrayList<Story>> sourceMap = new HashMap<>();
     private ArrayList<Story> storyMaster = new ArrayList<>();
-    private String selectedFilter;
+    private ArrayList<String> selectedFilters = new ArrayList<>();
 
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager pager;
     public static int screenWidth, screenHeight;
     private String sourceID;
+//    String selectedFilter;
 
     private ArrayList<String> topicList = new ArrayList<String>();
     private ArrayList<String> countryList = new ArrayList<String>();
@@ -175,24 +176,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-//        for(String s : sourceList){
-//            ArrayList<Story> mapList = new ArrayList<Story>();
-//            for(Story story : storiesIn){
-//                if(story.getSourceName().equalsIgnoreCase(s)){
-//                    mapList.add(story);
-//                }
-////                sourceMap.put(s,mapList);
-//            }
-//        }
-
-//        System.out.println("MSNBC Source Map is: " + sourceMap.get("MSNBC"));
-
 
         opt_menu.clear();
         onCreateOptionsMenu(opt_menu);
-
-
-
         mDrawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_item, drawerArray));
 
         if (getSupportActionBar() != null) {
@@ -211,8 +197,6 @@ public class MainActivity extends AppCompatActivity {
             if (s.getSourceName().equalsIgnoreCase(itemSelected)) {
                 sourceID = s.getId();
             }
-
-//        currentSubRegion = subRegionDisplayed.get(position);
 
             mDrawerLayout.closeDrawer(mDrawerList);
         }
@@ -287,12 +271,12 @@ public class MainActivity extends AppCompatActivity {
     // COUNTRY OBJECTS ARE CREATED IN SUBREGION LOADER
     //
     public void setStoryFragments(ArrayList<Article> storyList) {
-            System.out.println("Received ArticleList from Runnable Size: " + storyList.size());
+
 //        setTitle(currentSubRegion);
 
         for (int i = 0; i < pageAdapter.getCount(); i++)
             pageAdapter.notifyChangeInPosition(i);
-        fragments.clear();
+            fragments.clear();
 
         // CREATES FRAGMENT FOR EACH STORY OBJECT PASSED
         for (int i = 0; i < storyList.size(); i++) {
@@ -305,34 +289,56 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        String selectedFilter = item.toString();
+        System.out.println("Selected Filter: " + selectedFilter);
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             Log.d(TAG, "onOptionsItemSelected: mDrawerToggle " + item);
             return true;
         }
-        System.out.println("item selected: " + item);
 
         for(String s : topicList){
-            if(item.toString().equalsIgnoreCase(s)){
-                selectedFilter = item.toString();
+            if(selectedFilter.equalsIgnoreCase(s)){
+                selectedFilters.add(selectedFilter);
             }
         }
+
+        for(String s : countryList){
+            if(selectedFilter.equalsIgnoreCase(s)){
+                selectedFilters.add(selectedFilter);
+            }
+        }
+        for(String s : languageList){
+            if(selectedFilter.equalsIgnoreCase(s)){
+                selectedFilters.add(selectedFilter);
+            }
+        }
+
+        System.out.println("Selected filters are: ");
+
+        for(String s : selectedFilters){
+            System.out.println(s);
+        }
+
+
         setTitle(item.getTitle());
 
+        //Clears drawer array of sources when new filter selected.
         drawerArray.clear();
 
-        for(Story story : storyMaster){
-            if(story.getCategory().equalsIgnoreCase(selectedFilter)){
-                drawerArray.add(story.getSourceName());
+        // Adds stories to drawer array based on filter criteria
+        for(String filter : selectedFilters){
+            for(Story story : storyMaster){
+                if(story.getCategory().equalsIgnoreCase(filter)){
+                    drawerArray.add(story.getSourceName());
+                }
+                else if(story.getCountry().equalsIgnoreCase(filter)){
+                    drawerArray.add(story.getSourceName());
+                }
+                else if(story.getLanguage().equalsIgnoreCase(filter)){
+                    drawerArray.add(story.getSourceName());
+                }
             }
         }
-
-
-//        subRegionDisplayed.clear();
-//        ArrayList<String> lst = regionData.get(item.getTitle().toString());
-//        if (lst != null) {
-//            subRegionDisplayed.addAll(lst);
-//        }
 
         ((ArrayAdapter) mDrawerList.getAdapter()).notifyDataSetChanged();
         mDrawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_item, drawerArray));
