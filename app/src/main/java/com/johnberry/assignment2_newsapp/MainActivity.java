@@ -50,8 +50,11 @@ public class MainActivity extends AppCompatActivity {
     private HashMap<String, ArrayList<Story>> countryMap = new HashMap<>();
     private HashMap<String, ArrayList<Story>> topicMap = new HashMap<>();
     private HashMap<String, ArrayList<Story>> sourceMap = new HashMap<>();
-    private ArrayList<Story> storyMaster = new ArrayList<>();
+    private ArrayList<Story> storyMaster = new ArrayList<Story>();
     private ArrayList<String> selectedFilters = new ArrayList<>();
+
+    private HashMap<String, String> languageCodeMap = new HashMap<String, String>();
+    private HashMap<String, String> countryCodeMap = new HashMap<String, String>();
 
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -290,6 +293,7 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean onOptionsItemSelected(MenuItem item) {
         String selectedFilter = item.toString();
+
         System.out.println("Selected Filter: " + selectedFilter);
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             Log.d(TAG, "onOptionsItemSelected: mDrawerToggle " + item);
@@ -297,14 +301,25 @@ public class MainActivity extends AppCompatActivity {
         }
 
         for(String s : topicList){
+
             if(selectedFilter.equalsIgnoreCase(s)){
                 selectedFilters.add(selectedFilter);
             }
         }
 
         for(String s : countryList){
-            if(selectedFilter.equalsIgnoreCase(s)){
-                selectedFilters.add(selectedFilter);
+            String upperS = s.toUpperCase();
+            String translatedCountry = countryCodeMap.get(upperS);
+//            System.out.println(countryCodeMap.keySet());
+
+//            System.out.println("s is: " + s + " trsnStr: " + translatedString);
+
+
+            if(selectedFilter.equalsIgnoreCase(translatedCountry)){
+//                translatedString = countryCodeMap.get(selectedFilter);
+//                System.out.println("Translated str: " + translatedString);
+                selectedFilters.add(upperS);
+
             }
         }
         for(String s : languageList){
@@ -375,6 +390,8 @@ public class MainActivity extends AppCompatActivity {
         InputStream is;
         JSONArray cleanJSON;
 
+        //Create global hashmap of country and languagecodes;
+
         if(typeCode == 1) {
              is = getResources().openRawResource(R.raw.country_codes);
         }
@@ -404,6 +421,17 @@ public class MainActivity extends AppCompatActivity {
 
         if(typeCode == 1) {
              cleanJSON = jsonCodes.getJSONArray("countries");
+
+             for(int i = 0; i < cleanJSON.length(); i++){
+                 JSONObject codeObj = (JSONObject) cleanJSON.get(i);
+                 String code = codeObj.getString("code");
+                 String name = codeObj.getString("name");
+                 countryCodeMap.put(code, name);
+             }
+//
+//             System.out.println("Country Code Map: " + countryCodeMap);
+//             System.out.println("PuertoRico Code: " + countryCodeMap.get("Puerto Rico"));
+
         }
         else{
              cleanJSON = jsonCodes.getJSONArray("languages");

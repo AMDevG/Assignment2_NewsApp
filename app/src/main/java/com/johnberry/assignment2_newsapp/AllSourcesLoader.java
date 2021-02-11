@@ -79,7 +79,7 @@ public class AllSourcesLoader implements  Runnable {
             String storyStr = jsonResponse.getString("sources");
             ArrayList<Story> storyObjects = parseJSON(storyStr);
 
-            System.out.println("Story Objects are: " + storyObjects);
+//            System.out.println("Story Objects are: " + storyObjects);
 
             if (storyObjects != null) {
                 mainActivity.runOnUiThread(() -> mainActivity.setupStories(storyObjects));
