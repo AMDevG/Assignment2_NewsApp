@@ -201,10 +201,8 @@ public class MainActivity extends AppCompatActivity {
             if (s.getSourceName().equalsIgnoreCase(itemSelected)) {
                 sourceID = s.getId();
             }
-
             mDrawerLayout.closeDrawer(mDrawerList);
         }
-
         new Thread(new SourceLoaderRunnable(this, sourceID)).start();
     }
 
@@ -271,9 +269,8 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    // CALLED FROM SUBREGION LOADER
-    // COUNTRY OBJECTS ARE CREATED IN SUBREGION LOADER
-    //
+    // CALLED FROM SourceLoaderRunnable LOADER after drawer selection made
+
     public void setStoryFragments(ArrayList<Article> storyList) {
 
 //        setTitle(currentSubRegion);
@@ -353,19 +350,91 @@ public class MainActivity extends AppCompatActivity {
         drawerArray.clear();
 
         // Adds stories to drawer array based on filter criteria
-        for(String key : selectedFilters.keySet()){
-            for(Story story : storyMaster){
-                if(story.getCategory().equalsIgnoreCase(selectedFilters.get(key))){
-                    drawerArray.add(story.getSourceName());
-                }
-                else if(story.getCountry().equalsIgnoreCase(selectedFilters.get(key))){
-                    drawerArray.add(story.getSourceName());
-                }
-                else if(story.getLanguage().equalsIgnoreCase(selectedFilters.get(key))){
-                    drawerArray.add(story.getSourceName());
+//        for(String key : selectedFilters.keySet()){
+//            for(Story story : storyMaster){
+//                if(story.getCategory().equalsIgnoreCase(selectedFilters.get(key))){
+//                    drawerArray.add(story.getSourceName());
+//                }
+//                else if(story.getCountry().equalsIgnoreCase(selectedFilters.get(key))){
+//                    drawerArray.add(story.getSourceName());
+//                }
+//                else if(story.getLanguage().equalsIgnoreCase(selectedFilters.get(key))){
+//                    drawerArray.add(story.getSourceName());
+//                }
+//            }
+//        }
+
+        String topicVal, countryVal, langVal;
+
+        topicVal = selectedFilters.get("topic");
+        countryVal = selectedFilters.get("country");
+        langVal = selectedFilters.get("language");
+
+        ArrayList<String> filterTypes = new ArrayList<>();
+        int topicFlag = 0;
+        int countryFlag= 0;
+        int langFlag = 0;
+
+            for(String k : selectedFilters.keySet()){
+                if(k != null){
+                    switch(k) {
+                        case "topic":
+                            topicFlag = 1;
+                            break;
+                        case "country":
+                            countryFlag = 1;
+                            break;
+                        case "language":
+                            langFlag = 1;
+                    }
                 }
             }
-        }
+
+            for(Story story : storyMaster){
+
+                if (langFlag == 1 && topicFlag == 1 && countryFlag == 1){
+                    if(story.getCategory().equalsIgnoreCase(topicVal) && story.getCountry().equalsIgnoreCase(countryVal) && story.getLanguage().equalsIgnoreCase(langVal)){
+                        drawerArray.add(story.getSourceName());
+                    }
+                }
+
+                else if(langFlag == 1 && topicFlag == 1 && countryFlag == 0){
+                    if(story.getCategory().equalsIgnoreCase(topicVal) && story.getLanguage().equalsIgnoreCase(langVal)){
+                        drawerArray.add(story.getSourceName());
+                    }
+                }
+                else if(langFlag == 1 && topicFlag == 0 && countryFlag == 0){
+                    if(story.getLanguage().equalsIgnoreCase(langVal)){
+                        drawerArray.add(story.getSourceName());
+                    }
+                }
+
+                else if(langFlag == 0 && topicFlag == 1 && countryFlag == 1){
+                    if(story.getCategory().equalsIgnoreCase(topicVal) && story.getCountry().equalsIgnoreCase(countryVal)){
+                        drawerArray.add(story.getSourceName());
+                    }
+                }
+
+                else if(langFlag == 0 && topicFlag == 0 && countryFlag == 1){
+                    if(story.getCountry().equalsIgnoreCase(countryVal)){
+                        drawerArray.add(story.getSourceName());
+                    }
+                }
+
+                else if(langFlag == 1 && topicFlag == 0 && countryFlag == 1){
+                    if(story.getLanguage().equalsIgnoreCase(langVal) && story.getCountry().equalsIgnoreCase(countryVal)){
+                        drawerArray.add(story.getSourceName());
+                    }
+
+                }
+
+                else if(langFlag == 0 && topicFlag == 1 && countryFlag == 0){
+                    if(story.getCategory().equalsIgnoreCase(topicVal)){
+                        drawerArray.add(story.getSourceName());
+                    }
+                }
+            }
+
 
         ((ArrayAdapter) mDrawerList.getAdapter()).notifyDataSetChanged();
         mDrawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_item, drawerArray));

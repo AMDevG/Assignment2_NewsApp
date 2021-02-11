@@ -1,5 +1,7 @@
 package com.johnberry.assignment2_newsapp;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Locale;
 
 public class StoryFragment extends Fragment {
@@ -60,6 +66,14 @@ public class StoryFragment extends Fragment {
 
             TextView pageNum = fragment_layout.findViewById(R.id.page_num);
             pageNum.setText(String.format(Locale.US, "%d of %d", index, total));
+
+            try {
+                articleImageView.setImageBitmap(currentStory.getBitmap());
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 //
 //            ImageView imageView = fragment_layout.findViewById(R.id.imageView);
 //            imageView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
@@ -70,6 +84,14 @@ public class StoryFragment extends Fragment {
         } else {
             return null;
         }
+    }
+
+    private Bitmap downloadImage(String imageURL) throws IOException {
+        InputStream is = (InputStream) new URL(imageURL).getContent();
+        Bitmap bm = BitmapFactory.decodeStream(is);
+        is.close();
+        return bm;
+
     }
 
 
