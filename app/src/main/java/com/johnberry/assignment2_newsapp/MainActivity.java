@@ -219,9 +219,9 @@ public class MainActivity extends AppCompatActivity {
         SubMenu countrySubMenu = countryItem.getSubMenu();
         SubMenu languageSubMenu = languageItem.getSubMenu();
 
-        topicSubMenu.add("All");
-        countrySubMenu.add("All");
-        languageSubMenu.add("All");
+        topicSubMenu.add("All topics");
+        countrySubMenu.add("All countries");
+        languageSubMenu.add("All languages");
 
         if(topicList.size() > 0) {
             for (String s : topicList) {
@@ -290,16 +290,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
+
         String selectedFilter = item.toString();
 
-        System.out.println("Selected Filter: " + selectedFilter);
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             Log.d(TAG, "onOptionsItemSelected: mDrawerToggle " + item);
             return true;
         }
 
         for(String s : topicList){
-
             if(selectedFilter.equalsIgnoreCase(s)){
                 if(selectedFilters.containsKey("topic")){
                     selectedFilters.replace("topic", s);
@@ -328,7 +327,7 @@ public class MainActivity extends AppCompatActivity {
         for(String s : languageList){
             String upperS = s.toUpperCase();
             String translatedLanguage = languageCodeMap.get(upperS);
-            System.out.println("selectedFilter" + selectedFilter + " tranlated: " + translatedLanguage);
+//            System.out.println("selectedFilter" + selectedFilter + " translated: " + translatedLanguage);
 
             if(selectedFilter.equalsIgnoreCase(translatedLanguage)){
                 if(selectedFilters.containsKey("language")){
@@ -340,29 +339,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        System.out.println("Selected filters are: " + selectedFilters.values());
-
-
-
         setTitle(item.getTitle());
 
-        //Clears drawer array of sources when new filter selected.
         drawerArray.clear();
-
-        // Adds stories to drawer array based on filter criteria
-//        for(String key : selectedFilters.keySet()){
-//            for(Story story : storyMaster){
-//                if(story.getCategory().equalsIgnoreCase(selectedFilters.get(key))){
-//                    drawerArray.add(story.getSourceName());
-//                }
-//                else if(story.getCountry().equalsIgnoreCase(selectedFilters.get(key))){
-//                    drawerArray.add(story.getSourceName());
-//                }
-//                else if(story.getLanguage().equalsIgnoreCase(selectedFilters.get(key))){
-//                    drawerArray.add(story.getSourceName());
-//                }
-//            }
-//        }
 
         String topicVal, countryVal, langVal;
 
@@ -389,6 +368,28 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
+
+        if(selectedFilter =="All topics"){
+            System.out.println("Reset all Topics");
+            topicFlag = 0;
+            topicVal = "";
+        }
+        else if(selectedFilter =="All countries"){
+            System.out.println("Reset all Countries");
+            countryFlag = 0;
+            countryVal = "";
+        }
+        else if(selectedFilter =="All languages"){
+            System.out.println("Reset all Langs");
+            langFlag = 0;
+            langVal = "";
+        }
+
+        System.out.println("Selected Filter is: " + selectedFilter);
+        System.out.println("Current flags are: ");
+        System.out.println("TopicFlag: " + topicFlag + " val:" + topicVal);
+        System.out.println("CountryFlag: " + countryFlag + " val: " + countryVal);
+        System.out.println("LangFlag: " + langFlag + " val: " + langVal);
 
             for(Story story : storyMaster){
 
@@ -435,7 +436,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-
         ((ArrayAdapter) mDrawerList.getAdapter()).notifyDataSetChanged();
         mDrawerList.setAdapter(new ArrayAdapter<>(this, R.layout.drawer_item, drawerArray));
         return super.onOptionsItemSelected(item);
@@ -443,29 +443,20 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private void hideOption(int id)
-    {
-        MenuItem item = opt_menu.findItem(id);
-        item.setVisible(false);
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
     }
 
-    private void showOption(int id)
-    {
-        MenuItem item = opt_menu.findItem(id);
-        item.setVisible(true);
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Pass any configuration change to the drawer toggls
+        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    private void setOptionTitle(int id, String title)
-    {
-        MenuItem item = opt_menu.findItem(id);
-        item.setTitle(title);
-    }
-
-    private void setOptionIcon(int id, int iconRes)
-    {
-        MenuItem item = opt_menu.findItem(id);
-        item.setIcon(iconRes);
-    }
 
     private JSONArray translateCodes(String codeIn, int typeCode) throws IOException, JSONException {
         InputStream is;
@@ -475,10 +466,10 @@ public class MainActivity extends AppCompatActivity {
         //Create global hashmap of country and languagecodes;
 
         if(typeCode == 1) {
-             is = getResources().openRawResource(R.raw.country_codes);
+            is = getResources().openRawResource(R.raw.country_codes);
         }
         else{
-             is = getResources().openRawResource(R.raw.language_codes);
+            is = getResources().openRawResource(R.raw.language_codes);
         }
 
         Writer writer = new StringWriter();
@@ -502,19 +493,19 @@ public class MainActivity extends AppCompatActivity {
         JSONObject jsonCodes = new JSONObject(jsonString);
 
         if(typeCode == 1) {
-             cleanJSON = jsonCodes.getJSONArray("countries");
+            cleanJSON = jsonCodes.getJSONArray("countries");
 
-             for(int i = 0; i < cleanJSON.length(); i++){
-                 JSONObject codeObj = (JSONObject) cleanJSON.get(i);
-                 String code = codeObj.getString("code");
-                 String name = codeObj.getString("name");
-                 countryCodeMap.put(code, name);
-             }
+            for(int i = 0; i < cleanJSON.length(); i++){
+                JSONObject codeObj = (JSONObject) cleanJSON.get(i);
+                String code = codeObj.getString("code");
+                String name = codeObj.getString("name");
+                countryCodeMap.put(code, name);
+            }
 
-             return cleanJSON;
+            return cleanJSON;
         }
         else{
-             cleanJSONLang = jsonCodes.getJSONArray("languages");
+            cleanJSONLang = jsonCodes.getJSONArray("languages");
 
             for(int i = 0; i < cleanJSONLang.length(); i++){
                 JSONObject codeObj = (JSONObject) cleanJSONLang.get(i);
@@ -525,20 +516,6 @@ public class MainActivity extends AppCompatActivity {
             return cleanJSONLang ;
         }
 
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        // Pass any configuration change to the drawer toggls
-        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     private class MyPageAdapter extends FragmentPagerAdapter {

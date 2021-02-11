@@ -20,8 +20,7 @@ import java.util.Locale;
 
 public class StoryFragment extends Fragment {
 
-    public StoryFragment(){
-    }
+    public StoryFragment(){}
 
     public static StoryFragment newInstance(Article article, int index, int max){
         StoryFragment f = new StoryFragment();
@@ -30,13 +29,10 @@ public class StoryFragment extends Fragment {
         bdl.putSerializable("INDEX", index);
         bdl.putSerializable("TOTAL_COUNT", max);
         f.setArguments(bdl);
-        System.out.println("New Fragement Created size: " + max);
+//        System.out.println("New Fragement Created size: " + max);
         return f;
     }
 
-
-
-    // SET ALL
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -52,13 +48,12 @@ public class StoryFragment extends Fragment {
             int index = args.getInt("INDEX");
             int total = args.getInt("TOTAL_COUNT");
 
-
             TextView titleTextview = fragment_layout.findViewById(R.id.titleTextView);
             TextView publishedAtTextView = fragment_layout.findViewById(R.id.publishedAtTextView);
             TextView authorTextView = fragment_layout.findViewById(R.id.authorTextView);
             ImageView articleImageView = fragment_layout.findViewById(R.id.articleImageView);
             TextView descriptionTextView = fragment_layout.findViewById(R.id.descriptionTextView);
-//
+
             titleTextview.setText(currentStory.getTitle());
             publishedAtTextView.setText(currentStory.getPublishedAt());
             authorTextView.setText(currentStory.getAuthor());
@@ -74,11 +69,7 @@ public class StoryFragment extends Fragment {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-//
-//            ImageView imageView = fragment_layout.findViewById(R.id.imageView);
-//            imageView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-//
-//            imageView.setImageDrawable(currentCountry.getDrawable());
+
 //            imageView.setOnClickListener(v -> clickFlag(currentCountry.getName()));
             return fragment_layout;
         } else {
@@ -91,11 +82,5 @@ public class StoryFragment extends Fragment {
         Bitmap bm = BitmapFactory.decodeStream(is);
         is.close();
         return bm;
-
     }
-
-
-
-
-
 }
